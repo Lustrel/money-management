@@ -1,0 +1,6 @@
+
+[{% for user in results -%}
+    {{ {id: user.id, label: user.name, value: user.name}|json_encode|raw }}
+    {# use "value" instead of "id" key, if you use jquery-ui #}
+    {%- if not loop.last %},{% endif -%}
+{%- endfor %}]

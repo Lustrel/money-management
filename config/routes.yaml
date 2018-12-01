@@ -1,0 +1,28 @@
+index:
+    path: /
+    controller: App\Controller\Authenticator::new
+
+register_user:
+    path: /register_user
+    controller: App\Controller\RegisterUser::new
+
+create_loan:
+    path: /create_loan
+    controller: App\Controller\CreateLoan::new
+
+author_search:
+    path: /user_search
+    controller: App\Controller\CreateLoan::searchUser
+
+author_get:
+    path: /author_get
+    controller: App\Controller\CreateLoan::getUser
+
+
+reports:
+    path: /reports
+    controller: App\Controller\ReportController::new
+
+edit_user:
+    path: /edit_user
+    controller: App\Controller\UsersController::editUser
