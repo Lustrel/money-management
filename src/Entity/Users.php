@@ -27,6 +27,11 @@ class Users
     private $password;
 
     /**
+     * @ORM\Column(type="string", columnDefinition="CHAR(12)")
+     */
+    private $phone;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Roles", inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -36,15 +41,6 @@ class Users
      * @ORM\OneToMany(targetEntity="App\Entity\Customers", mappedBy="user")
      */
     private $customers;
-
-
-
-
-    
-    public function __construct()
-    {
-        $this->customers = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {

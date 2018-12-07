@@ -32,30 +32,20 @@ class Customers
     private $email;
 
     /**
+     * @ORM\Column(type="string", columnDefinition="CHAR(12)")
+     */
+    private $phone;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Users", inversedBy="customers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
      /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Phones", inversedBy="customers")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $phone;
-
-     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Loans", mappedBy="customer")
      */
     private $loans;
-
-
-
-
-    
-    public function __construct()
-    {
-        $this->loans = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
