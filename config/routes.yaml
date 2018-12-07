@@ -18,7 +18,6 @@ author_get:
     path: /author_get
     controller: App\Controller\CreateLoan::getUser
 
-
 reports:
     path: /reports
     controller: App\Controller\ReportController::new
@@ -26,3 +25,11 @@ reports:
 edit_user:
     path: /edit_user
     controller: App\Controller\UsersController::editUser
+
+create_customer:
+    path: /create_customer
+    controller: App\Controller\Customer::new
+
+customers:
+    path: /customers
+    controller: App\Controller\Customer::customers
