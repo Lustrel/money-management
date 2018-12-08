@@ -18,11 +18,10 @@ author_get:
     path: /author_get
     controller: App\Controller\CreateLoan::getUser
 
-
-reports:
-    path: /reports
-    controller: App\Controller\ReportController::new
-
 edit_user:
     path: /edit_user
     controller: App\Controller\UsersController::editUser
+
+reports:
+    path: /reports
+    controller: App\Controller\Installment::index

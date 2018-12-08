@@ -1,0 +1,49 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {{ parent() ~ 'Parcelas' }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center">Parcelas</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">CPF</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Vencimento</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for installment in installments %}
+                        <tr>
+                            <th scope="row">{{ installment.id }}</th>
+                            <td>{{ installment.customer.name}}</td>
+                            <td>{{ installment.customer.document_number }}</td>
+                            <td>{{ installment.value }}</td>
+                            <td>{{ installment.due_date }}</td>
+                            <td>{{ 'A receber' }}</td>
+                            <td>
+                                <a class="btn btn-secondary btn-sm" href="/edit_user/{{ user.id }}">Editar</a>
+                                <a class="btn btn-danger btn-sm" href="/remove_user/{{ user.id }}">Remover</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
