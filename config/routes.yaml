@@ -2,9 +2,21 @@ index:
     path: /
     controller: App\Controller\Authenticator::new
 
-register_user:
-    path: /register_user
-    controller: App\Controller\RegisterUser::new
+users:
+    path: /users
+    controller: App\Controller\User::index
+
+create_user:
+    path: /create_user
+    controller: App\Controller\User::new
+
+edit_user:
+    path: /edit_user/{id}
+    controller: App\Controller\User::edit
+
+remove_user:
+    path: /remove_user/{id}
+    controller: App\Controller\User::remove
 
 create_loan:
     path: /create_loan
@@ -22,7 +34,3 @@ author_get:
 reports:
     path: /reports
     controller: App\Controller\ReportController::new
-
-edit_user:
-    path: /edit_user
-    controller: App\Controller\UsersController::editUser

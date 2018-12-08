@@ -31,6 +31,7 @@ class AppFixtures extends Fixture
     private function addUsers(ObjectManager $manager)
     {
         $user = (new UserEntity())
+            ->setName('Fulano Rodrigues')
             ->setEmail('admin@exemplo.com')
             ->setPassword('admin123')
             ->setPhone('31 998001111')

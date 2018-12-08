@@ -44,6 +44,11 @@ class User
     private $customers;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -138,6 +143,24 @@ class User
     public function setCustomers($customers)
     {
         $this->customers = $customers;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     * @return User
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
         return $this;
     }
 }
