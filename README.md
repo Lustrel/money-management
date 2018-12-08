@@ -18,8 +18,9 @@ After these steps, a new file is created in your root directory: `vendor`. It co
 
 1. Modify your `DATABASE_URL` config in `.env` file.
 2. Configure the `driver` as `pdo_mysql` and `server_version` as `5.7` in `config/packages/doctrine.yaml`.
-3. Create your database: `$ php bin/console doctrine:database:create`.
-4. Run all the migrations: `$ php bin/console doctrine:migrations:migrate`.
+3. Create your database: `$ php bin/composer run-script sge:database:create`.
+4. Run all the migrations: `$ php bin/composer run-script sge:database:migrate`.
+5. Populate it with an initial data: `$ php bin/composer run-script sge:database:populate`
 
 After these steps, your Database should be created and populated with a few tables.
 

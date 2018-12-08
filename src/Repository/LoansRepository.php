@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Loans;
+use App\Entity\Loan;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Loans|null find($id, $lockMode = null, $lockVersion = null)
- * @method Loans|null findOneBy(array $criteria, array $orderBy = null)
- * @method Loans[]    findAll()
- * @method Loans[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Loan|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Loan|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Loan[]    findAll()
+ * @method Loan[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class LoansRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Loans::class);
+        parent::__construct($registry, Loan::class);
     }
 
     // /**
-    //  * @return Loans[] Returns an array of Loans objects
+    //  * @return Loan[] Returns an array of Loan objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class LoansRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Loans
+    public function findOneBySomeField($value): ?Loan
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.exampleField = :val')
