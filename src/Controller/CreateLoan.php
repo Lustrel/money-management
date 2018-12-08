@@ -82,7 +82,7 @@ class CreateLoan extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->render('registerUserSuccess.html.twig'
+            return $this->render('user-registered-successfully.twig'
             );
         }
 
