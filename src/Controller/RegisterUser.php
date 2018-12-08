@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Entity\Loan;
 use App\Entity\User;
+use App\Entity\Role as RoleEntity;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,39 +20,17 @@ class RegisterUser extends AbstractController
 {
     public function new(Request $request)
     {
-
-        $session = new Session();
-        /*//var_dump($session->get('name')); die;
-        if ($session->get('job') < 7777) {
-            return $this->render('access_not_allowed.html.twig'
-            );
-        }*/
-
-        // creates a task and gives it some dummy data for this example
         $user = new User();
-        //$user->setTask('Write a blog post');
-        $user->setDueDate(new \DateTime('tomorrow'));
 
         $form = $this->createFormBuilder($user)
-            ->add('name', TextType::class, ['label' => "Nome: "])
-            ->add('document', NumberType::class, ['label' => "CPF / CNPJ: "])
-            ->add('address', TextType::class, ['label' => "Endereço: "])
-            ->add('phone', TelType::class, ['label' => "Telefone: "])
             ->add('email', EmailType::class, ['label' => "Email: "])
             ->add('password', TextType::class, ['label' => "Senha: "])
-            ->add('seller', NumberType::class, ['label' => "Responsável: "])
-            ->add('job', ChoiceType::class, array(
-                'label'   =>    "Cargo: ",
-                'choices' => array(
-                    'Opções' => array(
-                        'Administrador' => 9999,
-                        'Gerente'       => 8888,
-                        'Vendedor'      => 7777,
-                        'Cliente'       => 6666,
-                    ),
-                )
+            ->add('phone', TelType::class, ['label' => "Telefone: "])
+            ->add('role', EntityType::class, array(
+                'label' => 'Cargo:',
+                'class' => RoleEntity::class,
+                'choice_label' => 'name'
             ))
-            //->add('dueDate', DateType::class)
             ->add('save', SubmitType::class, array('label' => 'Cadastrar Usuário'))
             ->getForm();
 

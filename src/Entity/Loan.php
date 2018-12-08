@@ -5,7 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\LoanRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\LoansRepository")
+ * @ORM\Table(name="loans")
  */
 class Loan
 {
@@ -19,126 +20,194 @@ class Loan
     /**
      * @ORM\Column(type="integer")
      */
-    private $loanValue;
+    private $borrowed_value;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $installments;
+    private $total_installments;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=5, scale=2)
      */
-    private $fee;
+    private $monthly_fee;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=5, scale=2)
      */
     private $discount;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
-    private $info;
+    private $comments;
 
     /**
-     * @ORM\Column(type="date")
-     */
-    private $dueDate;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="loans")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="loans")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
-    
+    private $customer;
 
-    public function getId(): ?int
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\InstallmentPeriod", inversedBy="loans")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $installment_period;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Installment", mappedBy="loan")
+     */
+    private $installments;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getLoanValue(): ?int
+    /**
+     * @return mixed
+     */
+    public function getBorrowedValue()
     {
-        return $this->loanValue;
+        return $this->borrowed_value;
     }
 
-    public function setLoanValue(int $loanValue): self
+    /**
+     * @param mixed $borrowed_value
+     * @return Loan
+     */
+    public function setBorrowedValue($borrowed_value)
     {
-        $this->loanValue = $loanValue;
-
+        $this->borrowed_value = $borrowed_value;
         return $this;
     }
 
-    public function getInstallments(): ?int
+    /**
+     * @return mixed
+     */
+    public function getTotalInstallments()
     {
-        return $this->installments;
+        return $this->total_installments;
     }
 
-    public function setInstallments(int $installments): self
+    /**
+     * @param mixed $total_installments
+     * @return Loan
+     */
+    public function setTotalInstallments($total_installments)
     {
-        $this->installments = $installments;
-
+        $this->total_installments = $total_installments;
         return $this;
     }
 
-    public function getFee(): ?int
+    /**
+     * @return mixed
+     */
+    public function getMonthlyFee()
     {
-        return $this->fee;
+        return $this->monthly_fee;
     }
 
-    public function setFee(int $fee): self
+    /**
+     * @param mixed $monthly_fee
+     * @return Loan
+     */
+    public function setMonthlyFee($monthly_fee)
     {
-        $this->fee = $fee;
-
+        $this->monthly_fee = $monthly_fee;
         return $this;
     }
 
-    public function getDiscount(): ?int
+    /**
+     * @return mixed
+     */
+    public function getDiscount()
     {
         return $this->discount;
     }
 
-    public function setDiscount(int $discount): self
+    /**
+     * @param mixed $discount
+     * @return Loan
+     */
+    public function setDiscount($discount)
     {
         $this->discount = $discount;
-
         return $this;
     }
 
-    public function getInfo(): ?string
+    /**
+     * @return mixed
+     */
+    public function getComments()
     {
-        return $this->info;
+        return $this->comments;
     }
 
-    public function setInfo(string $info): self
+    /**
+     * @param mixed $comments
+     * @return Loan
+     */
+    public function setComments($comments)
     {
-        $this->info = $info;
-
+        $this->comments = $comments;
         return $this;
     }
 
-    public function getDueDate(): ?\DateTimeInterface
+    /**
+     * @return mixed
+     */
+    public function getCustomer()
     {
-        return $this->dueDate;
+        return $this->customer;
     }
 
-    public function setDueDate(\DateTimeInterface $dueDate): self
+    /**
+     * @param mixed $customer
+     * @return Loan
+     */
+    public function setCustomer($customer)
     {
-        $this->dueDate = $dueDate;
-
+        $this->customer = $customer;
         return $this;
     }
 
-    public function getUser(): ?User
+    /**
+     * @return mixed
+     */
+    public function getInstallmentPeriod()
     {
-        return $this->user;
+        return $this->installment_period;
     }
 
-    public function setUser(?User $user): self
+    /**
+     * @param mixed $installment_period
+     * @return Loan
+     */
+    public function setInstallmentPeriod($installment_period)
     {
-        $this->user = $user;
+        $this->installment_period = $installment_period;
+        return $this;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getInstallments()
+    {
+        return $this->installments;
+    }
+
+    /**
+     * @param mixed $installments
+     * @return Loan
+     */
+    public function setInstallments($installments)
+    {
+        $this->installments = $installments;
         return $this;
     }
 }

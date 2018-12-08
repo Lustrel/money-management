@@ -5,9 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\InstallmentStatusRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\InstallmentPeriodsRepository")
+ * @ORM\Table(name="installment_periods")
  */
-class InstallmentStatus
+class InstallmentPeriod
 {
     /**
      * @ORM\Id()
@@ -22,9 +23,9 @@ class InstallmentStatus
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Installment", mappedBy="status")
+     * @ORM\OneToMany(targetEntity="App\Entity\Loan", mappedBy="installment_period")
      */
-    private $installments;
+    private $loans;
 
     /**
      * @return mixed
@@ -44,7 +45,7 @@ class InstallmentStatus
 
     /**
      * @param mixed $name
-     * @return InstallmentStatus
+     * @return InstallmentPeriod
      */
     public function setName($name)
     {
@@ -55,18 +56,18 @@ class InstallmentStatus
     /**
      * @return mixed
      */
-    public function getInstallments()
+    public function getLoans()
     {
-        return $this->installments;
+        return $this->loans;
     }
 
     /**
-     * @param mixed $installments
-     * @return InstallmentStatus
+     * @param mixed $loans
+     * @return InstallmentPeriod
      */
-    public function setInstallments($installments)
+    public function setLoans($loans)
     {
-        $this->installments = $installments;
+        $this->loans = $loans;
         return $this;
     }
 }
