@@ -68,10 +68,18 @@ class User extends AbstractController
             ->add('email', EmailType::class, ['label' => "E-mail"])
             ->add('phone', TelType::class, ['label' => 'Telefone'])
             ->add('role', EntityType::class, ['label' => 'Cargo', 'class' => RoleEntity::class, 'choice_label' => 'name'])
-            ->add('save', SubmitType::class, array('label' => 'Cadastrar'))
+            ->add('save', SubmitType::class, array('label' => 'Editar'))
             ->getForm();
 
         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->flush();
+
+            return $this->redirectToRoute('users');
+        }
 
         return $this->render('edit-user.html.twig', array(
             'form' => $form->createView(),
