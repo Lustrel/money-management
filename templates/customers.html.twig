@@ -1,8 +1,9 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-    {{ parent() ~ 'Usuários' }}
+    {{ parent() ~ 'Clientes' }}
 {% endblock %}
+
 
 {% block body %}
     <div class="container">
@@ -11,13 +12,13 @@
         {% endfor %}
         <div class="row">
             <div class="col">
-                <h1 class="text-center">Listagem de usuários</h1>
+                <h1 class="text-center">Listagem de clientes</h1>
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                <a class="btn btn-primary" href="/create_user">Adicionar</a>
+                <a class="btn btn-primary" href="/create_customer">Adicionar</a>
             </div>
         </div>
 
@@ -27,24 +28,26 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">Vendedor</th>
                             <th scope="col">Nome</th>
-                            <th scope="col">E-mail</th>
+                            <th scope="col">Doc.Numero</th>
+                            <th scope="col">Email</th>
                             <th scope="col">Telefone</th>
-                            <th scope="col">Cargo</th>
-                            <th scope="col">Ações</th>
+                            <th scope="col">Ação</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for user in users %}
+                        {% for customer in customers %}
                             <tr>
-                                <th scope="row">{{ user.id }}</th>
-                                <td>{{ user.name }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.phone }}</td>
-                                <td>{{ user.role.name }}</td>
+                                <th scope="row">{{ customer.id }}</th>
+                                <td>{{customer.user.name}}</td>
+                                <td>{{ customer.name }}</td>
+                                <td>{{ customer.documentnumber }}</td>
+                                <td>{{ customer.email }}</td>
+                                <td>{{ customer.phone }}</td>
                                 <td>
-                                    <a class="btn btn-secondary btn-sm" href="/edit_user/{{ user.id }}">Editar</a>
-                                    <a class="btn btn-danger btn-sm" href="/remove_user/{{ user.id }}">Remover</a>
+                                    <a class="btn btn-secondary btn-sm" href="/edit_customer/{{ customer.id }}">Editar</a>
+                                    <a class="btn btn-danger btn-sm" href="/remove_customer/{{ customer.id }}">Remover</a>
                                 </td>
                             </tr>
                         {% endfor %}
