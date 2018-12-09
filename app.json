@@ -1,0 +1,34 @@
+{
+  "name": "sge-app",
+  "description": "",
+  "scripts": {
+    "postdeploy": "sge:database:create"
+  },
+  "env": {
+    "APP_ENV": {
+      "required": true
+    },
+    "CLEARDB_DATABASE_URL": {
+      "required": true
+    },
+    "DATABASE_URL": {
+      "required": true
+    },
+    "SYMFONY_ENV": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "cleardb"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/php"
+    }
+  ]
+}
