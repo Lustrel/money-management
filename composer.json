@@ -28,6 +28,7 @@
         "tetranz/select2entity-bundle": "2.*"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.0",
         "symfony/debug-pack": "*",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.9",
@@ -72,6 +73,15 @@
         ],
         "compile": [
             "php bin/console doctrine:migrations:migrate"
+        ],
+        "sge:database:create": [
+            "php bin/console doctrine:database:create"
+        ],
+        "sge:database:migrate": [
+            "php bin/console doctrine:migrations:migrate"
+        ],
+        "sge:database:populate": [
+            "php bin/console doctrine:fixtures:load"
         ]
     },
     "conflict": {

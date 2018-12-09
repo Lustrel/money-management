@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Installments;
+use App\Entity\Installment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Installments|null find($id, $lockMode = null, $lockVersion = null)
- * @method Installments|null findOneBy(array $criteria, array $orderBy = null)
- * @method Installments[]    findAll()
- * @method Installments[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Installment|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Installment|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Installment[]    findAll()
+ * @method Installment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class InstallmentsRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Installments::class);
+        parent::__construct($registry, Installment::class);
     }
 
     // /**
-    //  * @return Installments[] Returns an array of Installments objects
+    //  * @return Installment[] Returns an array of Installment objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class InstallmentsRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Installments
+    public function findOneBySomeField($value): ?Installment
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.exampleField = :val')

@@ -1,15 +1,58 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}
-            <h1>Your name is {{ name }}</h1>
-
+<head>
+    <meta charset="utf-8">
+    <title>
+        {% block title %}
+            SGE •
         {% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    {% block header %}
+        <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="/"><img  width="300" height="100" src="{{ asset('assets/img/logo.png') }}"/></a>
+        </nav>
+        <nav class="navbar navbar-expand-lg navbar-light bg-success">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto font-weight-bold">
+                    <li class="nav-item active">
+                        <a class="nav-link text-white" href="#">Clientes <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link text-white" href="/users">Usuários</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/create_loan">Empréstimos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/reports">Relatórios</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    {% endblock %}
+
+    <!-- Content always goes here -->
+    {% block body %}{% endblock %}
+
+    {% block footer %}
+        <footer class="bg-success">
+            <p class="text-right font-weight-bold text-white mr-3">DESENVOLVIDO POR ZEIT BRASIL</p>
+        </footer>
+    {% endblock footer %}
+
+    {% block javascripts %}{% endblock %}
+</body>
 </html>

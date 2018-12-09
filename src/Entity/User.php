@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\UsersRepository")
+ * @ORM\Table(name="users")
  */
 class User
 {
@@ -21,201 +20,147 @@ class User
     /**
      * @ORM\Column(type="string", length=255)
      */
-    public $name;
+    private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=32)
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $document;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $address;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", columnDefinition="CHAR(12)")
      */
     private $phone;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Role", inversedBy="users")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $role;
+
+     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Customer", mappedBy="user")
+     */
+    private $customers;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
-    private $email;
+    private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @return mixed
      */
-    private $seller;
-
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $dueDate;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $job;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Loan", mappedBy="user")
-     */
-    private $loans;
-
-
-    public function __construct()
-    {
-        $this->loans = new ArrayCollection();
-    }
-
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getDocument(): ?string
-    {
-        return $this->document;
-    }
-
-    public function setDocument(string $document): self
-    {
-        $this->document = $document;
-
-        return $this;
-    }
-
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(string $address): self
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    public function getPhone(): ?string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(string $phone): self
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
+    /**
+     * @return mixed
+     */
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    /**
+     * @param mixed $email
+     * @return User
+     */
+    public function setEmail($email)
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getSeller(): ?int
-    {
-        return $this->seller;
-    }
-
-    public function setSeller(int $seller): self
-    {
-        $this->seller = $seller;
-
-        return $this;
-    }
-
-    public function getDueDate(): ?\DateTimeInterface
-    {
-        return $this->dueDate;
-    }
-
-    public function setDueDate(\DateTimeInterface $dueDate): self
-    {
-        $this->dueDate = $dueDate;
-
-        return $this;
-    }
-
-    public function getJob(): ?int
-    {
-        return $this->job;
-    }
-
-    public function setJob(int $job): self
-    {
-        $this->job = $job;
-
         return $this;
     }
 
     /**
-     * @return Collection|Loan[]
+     * @return mixed
      */
-    public function getLoans(): Collection
+    public function getPassword()
     {
-        return $this->loans;
+        return $this->password;
     }
 
-    public function addLoan(Loan $loan): self
+    /**
+     * @param mixed $password
+     * @return User
+     */
+    public function setPassword($password)
     {
-        if (!$this->loans->contains($loan)) {
-            $this->loans[] = $loan;
-            $loan->setUser($this);
-        }
-
+        $this->password = $password;
         return $this;
     }
 
-    public function removeLoan(Loan $loan): self
+    /**
+     * @return mixed
+     */
+    public function getPhone()
     {
-        if ($this->loans->contains($loan)) {
-            $this->loans->removeElement($loan);
-            // set the owning side to null (unless already changed)
-            if ($loan->getUser() === $this) {
-                $loan->setUser(null);
-            }
-        }
+        return $this->phone;
+    }
 
+    /**
+     * @param mixed $phone
+     * @return User
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param mixed $role
+     * @return User
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomers()
+    {
+        return $this->customers;
+    }
+
+    /**
+     * @param mixed $customers
+     * @return User
+     */
+    public function setCustomers($customers)
+    {
+        $this->customers = $customers;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     * @return User
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
 }

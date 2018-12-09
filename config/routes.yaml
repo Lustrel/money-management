@@ -2,10 +2,41 @@ index:
     path: /
     controller: App\Controller\Authenticator::new
 
-register_user:
-    path: /register_user
-    controller: App\Controller\RegisterUser::new
+#Routes for User
+users:
+    path: /users
+    controller: App\Controller\User::index
 
+create_user:
+    path: /create_user
+    controller: App\Controller\User::new
+
+edit_user:
+    path: /edit_user/{id}
+    controller: App\Controller\User::edit
+
+remove_user:
+    path: /remove_user/{id}
+    controller: App\Controller\User::remove
+
+#Routes for Customer
+customers:
+    path: /customers
+    controller: App\Controller\Customer::index
+
+create_customer:
+    path: /create_customer
+    controller: App\Controller\Customer::new
+
+edit_customer:
+    path: /edit_customer/{id}
+    controller: App\Controller\Customer::edit
+
+remove_customer:
+    path: /remove_customer/{id}
+    controller: App\Controller\Customer::remove
+
+#Routes for Loan
 create_loan:
     path: /create_loan
     controller: App\Controller\CreateLoan::new
@@ -18,18 +49,7 @@ author_get:
     path: /author_get
     controller: App\Controller\CreateLoan::getUser
 
+
 reports:
     path: /reports
     controller: App\Controller\ReportController::new
-
-edit_user:
-    path: /edit_user
-    controller: App\Controller\UsersController::editUser
-
-create_customer:
-    path: /create_customer
-    controller: App\Controller\Customer::new
-
-customers:
-    path: /customers
-    controller: App\Controller\Customer::customers
