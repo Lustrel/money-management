@@ -13,7 +13,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
 
-
 class Customer extends AbstractController
 {
     public function index(Request $request)
