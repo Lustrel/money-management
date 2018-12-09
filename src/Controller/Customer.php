@@ -16,11 +16,14 @@ use Doctrine\ORM\EntityRepository;
 
 class Customer extends AbstractController
 {
-
     public function index(Request $request)
     {
-        $customers = $this->getDoctrine()->getRepository(CustomerEntity::class)->findAll();
-        return $this->render('customers.html.twig', array('customers' => $customers));
+        $customers = $this
+            ->getDoctrine()
+            ->getRepository(CustomerEntity::class)
+            ->findAll();
+
+        return $this->render('customer/index.html.twig', array('customers' => $customers));
     }
 
     public function new(Request $request)
