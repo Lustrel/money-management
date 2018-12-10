@@ -18,10 +18,6 @@ remove_user:
     path: /remove_user/{id}
     controller: App\Controller\User::remove
 
-create_loan:
-    path: /create_loan
-    controller: App\Controller\CreateLoan::new
-
 author_search:
     path: /user_search
     controller: App\Controller\CreateLoan::searchUser
@@ -31,6 +27,10 @@ author_get:
     controller: App\Controller\CreateLoan::getUser
 
 
-reports:
-    path: /reports
-    controller: App\Controller\ReportController::new
+loans:
+    path: /loans
+    controller: App\Controller\Loan::index
+
+create_loan:
+    path: /create_loan
+    controller: App\Controller\Loan::new
