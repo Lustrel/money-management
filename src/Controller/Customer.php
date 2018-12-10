@@ -22,7 +22,7 @@ class Customer extends AbstractController
             ->getRepository(CustomerEntity::class)
             ->findAll();
 
-        return $this->render('customer/index.html.twig', array('customers' => $customers));
+        return $this->render('customers.html.twig', array('customers' => $customers));
     }
 
     public function new(Request $request)
