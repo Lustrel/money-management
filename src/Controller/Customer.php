@@ -22,7 +22,9 @@ class Customer extends AbstractController
             ->getRepository(CustomerEntity::class)
             ->findAll();
 
-        return $this->render('customer/index.html.twig', array('customers' => $customers));
+        return $this->render('customer/index.html.twig', array(
+            'customers' => $customers
+        ));
     }
 
     public function new(Request $request)
@@ -47,8 +49,7 @@ class Customer extends AbstractController
                 'required' => true    
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
-            ->getForm()
-        ;
+            ->getForm();
 
         $form->handleRequest($request);
 
@@ -68,7 +69,7 @@ class Customer extends AbstractController
             return $this->redirectToRoute('customers');
         }
 
-        return $this->render('create-customer.html.twig', array(
+        return $this->render('customer/create.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -78,8 +79,7 @@ class Customer extends AbstractController
         $customer = $this
             ->getDoctrine()
             ->getRepository(CustomerEntity::class)
-            ->findOneBy(array('id' => $id))
-        ;
+            ->findOneBy(array('id' => $id));
 
         $form = $this->createFormBuilder($customer)
             ->add('name', TextType::class, ['label' => "Nome Completo"])
@@ -92,12 +92,10 @@ class Customer extends AbstractController
                 'label' => "Vendedor"
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
-            ->getForm()
-        ;
+            ->getForm();
 
         $form->handleRequest($request);
 
-        
         if ($form->isSubmitted() && $form->isValid()) {
           
             $entityManager = $this->getDoctrine()->getManager();
@@ -121,8 +119,7 @@ class Customer extends AbstractController
         $customer = $this
             ->getDoctrine()
             ->getRepository(CustomerEntity::class)
-            ->findOneBy(array('id' => $id))
-        ;
+            ->findOneBy(array('id' => $id));
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($customer);
