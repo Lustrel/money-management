@@ -17,7 +17,7 @@ class Authenticator extends AbstractController
         $session = new Session();
         if ($request->hasSession() && ($session = $request->getSession())) {
             if ($session->get('logged') == true) {
-                return $this->redirectToRoute('reports');
+                return $this->redirectToRoute('users');
             }
         }
 

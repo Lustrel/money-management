@@ -48,6 +48,11 @@ class User extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash(
+                'notice',
+                'Usuário cadastrado com sucesso!'
+            );
+
             return $this->redirectToRoute('users');
         }
 
@@ -67,8 +72,12 @@ class User extends AbstractController
             ->add('name', TextType::class, ['label' => "Nome completo"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
             ->add('phone', TelType::class, ['label' => 'Telefone'])
-            ->add('role', EntityType::class, ['label' => 'Cargo', 'class' => RoleEntity::class, 'choice_label' => 'name'])
-            ->add('save', SubmitType::class, array('label' => 'Editar'))
+            ->add('role', EntityType::class, [
+                'label' => 'Cargo',
+                'class' => RoleEntity::class,
+                'choice_label' => 'name'
+            ])
+            ->add('save', SubmitType::class, ['label' => 'Editar'])
             ->getForm();
 
         $form->handleRequest($request);
@@ -77,6 +86,11 @@ class User extends AbstractController
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
+
+            $this->addFlash(
+                'notice',
+                'Dados do usuário foram alterados com sucesso!'
+            );
 
             return $this->redirectToRoute('users');
         }
@@ -96,6 +110,11 @@ class User extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($user);
         $entityManager->flush();
+
+        $this->addFlash(
+            'notice',
+            'Usuário removido com sucesso!'
+        );
 
         return $this->redirectToRoute('users');
     }
