@@ -2,6 +2,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Role as RoleEntity;
+use App\Entity\InstallmentPeriod as InstallmentPeriodEntity;
 use App\Entity\User as UserEntity;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -12,6 +13,7 @@ class AppFixtures extends Fixture
     {
         $this->addRoles($manager);
         $this->addUsers($manager);
+        $this->addInstallmentPeriods($manager);
         $manager->flush();
     }
 
@@ -26,6 +28,19 @@ class AppFixtures extends Fixture
         $manager->persist($sellerRole);
 
         $this->addReference('admin-role', $adminRole);
+    }
+
+    private function addInstallmentPeriods(ObjectManager $manager)
+    {
+        $dailyPeriod = (new InstallmentPeriodEntity())->setName('Diariamente');
+        $weeklyPeriod = (new InstallmentPeriodEntity())->setName('Semanalmente');
+        $biweeklyPeriod = (new InstallmentPeriodEntity())->setName('Quinzenalmente');
+        $monthlyPeriod = (new InstallmentPeriodEntity())->setName('Mensalmente');
+
+        $manager->persist($dailyPeriod);
+        $manager->persist($weeklyPeriod);
+        $manager->persist($biweeklyPeriod);
+        $manager->persist($monthlyPeriod);
     }
 
     private function addUsers(ObjectManager $manager)
