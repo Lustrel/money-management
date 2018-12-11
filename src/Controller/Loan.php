@@ -14,6 +14,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use \DateTime;
+
 class Loan extends AbstractController
 {
     public function index(Request $request)
@@ -42,7 +45,7 @@ class Loan extends AbstractController
             ->add('totalInstallments', NumberType::class, ['label' => "Qntd. de parcelas"])
             ->add('monthlyFee', NumberType::class, ['label' => 'Taxa de juros mensal (%)'])
             ->add('discount', NumberType::class, ['label' => 'Desconto (%)'])
-            ->add('installments', DateType::class, array('label' => 'Data primeira parcela'))
+            ->add('installments', DateType::class, array('label' => 'Data primeira parcela', 'mapped' => false))
             ->add('installmentPeriod', EntityType::class, [
                 'label' => 'Intervalo de pagamento',
                 'class' => InstallmentPeriodEntity::class,
@@ -62,10 +65,12 @@ class Loan extends AbstractController
             $monthlyFee = $loan->getMonthlyFee();
             $discount = $loan->getDiscount();
             $totalInstallments = $loan->getTotalInstallments();
+            $firstInstallmentDate = $form->get('installments')->getData();
 
-            // Here we should get the date from the first day
-            // $firstInstallmentDate = $loan->getInstallments() // wrong
-            $firstInstallmentDate = date('Y-m-d'); // here we
+            $calcMonthlyFee = ($monthlyFee * $borrowedValue) / 100;
+            $calcDiscount = ($discount * $borrowedValue) / 100;
+            $calcBorrowedValue = ($borrowedValue + $calcMonthlyFee) - $calcDiscount;
+            $calcInstallmentValues = $calcBorrowedValue / $totalInstallments;
 
             $periodMap = array(
                 '1' => '+1 day',
@@ -73,54 +78,23 @@ class Loan extends AbstractController
                 '3' => '+15 day',
                 '4' => '+1 month',
             );
-
             $installmentPeriod = $periodMap[$loan->getInstallmentPeriod()->getId()];
 
-            $calcMonthlyFee = ($monthlyFee * $borrowedValue) / 100;
-            $calcDiscount = ($discount * $borrowedValue) / 100;
-            $calcBorrowedValue = ($borrowedValue + $calcMonthlyFee) - $calcDiscount;
-            $calcInstallmentValues = $calcBorrowedValue / $totalInstallments;
-
             $entityManager->persist($loan);
 
-             for($i = 0; $i < $totalInstallments; $i++)
-             {
-                 $installment = (new InstallmentEntity())
-                     ->setValue($calcInstallmentValues)
-                     ->setStatus($this->getDoctrine()->getRepository(InstallmentStatusEntity::class)->findOneBy(array('id' => 1)))
-                     ->setLoan($loan);
+            for($i = 0; $i < $totalInstallments; $i++)
+            { 
+                $installment = (new InstallmentEntity())
+                ->setValue($calcInstallmentValues)
+                ->setStatus($this->getDoctrine()->getRepository(InstallmentStatusEntity::class)->findOneBy(array('id' => 1)))
+                ->setLoan($loan)
+                ->setDueDate($firstInstallmentDate);
 
-                 $dueDate = ($i == 0)
-                     ? $firstInstallmentDate
-                     : date('Y-m-d', strtotime($installmentPeriod, strtotime($firstInstallmentDate->format('Y-m-d'))));
-
-                 $installment->setDueDate($dueDate);
-
-                 $entityManager->persist($installment);
-             }
-
-             $entityManager->flush();
-          
-             echo("quanto ele emprestou ".$borrowedValue);
-             echo("<br>quanto percent clocou de juros ".$monthlyFee);
-             echo("<br>quanto deu os juros ".$calcMonthlyFee);
-             echo("<br>quanto percent clocou de desconto ".$discount);
-             echo("<br>quanto deu o desconto ".$calcDiscount);
-             echo("<br>no final o valor a ser pago pelo cliente é ".$calcBorrowedValue);
-             echo("<br>quantidade de parcelas: ".$totalInstallments);
-             echo("<br>a primeira parcela ele vai pagar em: ".$firstInstallmentDate->format('Y-m-d'));
-             echo("<br>e os valores de cada parcela vai ser: ".round($calcInstallmentValues, 2));
-            
-
-            /*
-            $loan = $form->getData();
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($loan);
+                $entityManager->persist($installment);
+                $entityManager->flush(); 
+                $firstInstallmentDate = $firstInstallmentDate->modify($installmentPeriod);             
+            }
             $entityManager->flush();
-
-            return $this->redirectToRoute('users');
-            */
         }
 
         return $this->render('create-loan.html.twig', array(
