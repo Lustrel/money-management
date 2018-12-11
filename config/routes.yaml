@@ -2,6 +2,7 @@ index:
     path: /
     controller: App\Controller\Authenticator::new
 
+#Routes for User
 users:
     path: /users
     controller: App\Controller\User::index
@@ -18,15 +19,24 @@ remove_user:
     path: /remove_user/{id}
     controller: App\Controller\User::remove
 
-author_search:
-    path: /user_search
-    controller: App\Controller\CreateLoan::searchUser
+#Routes for Customer
+customers:
+    path: /customers
+    controller: App\Controller\Customer::index
 
-author_get:
-    path: /author_get
-    controller: App\Controller\CreateLoan::getUser
+create_customer:
+    path: /create_customer
+    controller: App\Controller\Customer::new
 
+edit_customer:
+    path: /edit_customer/{id}
+    controller: App\Controller\Customer::edit
 
+remove_customer:
+    path: /remove_customer/{id}
+    controller: App\Controller\Customer::remove
+
+#Routes for Loan
 loans:
     path: /loans
     controller: App\Controller\Loan::index
