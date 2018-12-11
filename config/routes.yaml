@@ -44,3 +44,11 @@ loans:
 create_loan:
     path: /create_loan
     controller: App\Controller\Loan::new
+
+edit_loan:
+    path: /edit_loan/{id}
+    controller: App\Controller\Loan::edit
+
+remove_loan:
+    path: /remove_loan/{id}
+    controller: App\Controller\Loan::remove
