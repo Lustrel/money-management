@@ -2,26 +2,42 @@ index:
     path: /
     controller: App\Controller\Authenticator::new
 
-register_user:
-    path: /register_user
-    controller: App\Controller\RegisterUser::new
+users:
+    path: /users
+    controller: App\Controller\User::index
+
+create_user:
+    path: /create_user
+    controller: App\Controller\User::new
+
+edit_user:
+    path: /edit_user/{id}
+    controller: App\Controller\User::edit
+
+remove_user:
+    path: /remove_user/{id}
+    controller: App\Controller\User::remove
+
+customers:
+    path: /customers
+    controller: App\Controller\Customer::index
+
+create_customer:
+    path: /create_customer
+    controller: App\Controller\Customer::new
+
+edit_customer:
+    path: /edit_customer/{id}
+    controller: App\Controller\Customer::edit
+
+remove_customer:
+    path: /remove_customer/{id}
+    controller: App\Controller\Customer::remove
+
+loans:
+    path: /loans
+    controller: App\Controller\Loan::index
 
 create_loan:
     path: /create_loan
-    controller: App\Controller\CreateLoan::new
-
-author_search:
-    path: /user_search
-    controller: App\Controller\CreateLoan::searchUser
-
-author_get:
-    path: /author_get
-    controller: App\Controller\CreateLoan::getUser
-
-edit_user:
-    path: /edit_user
-    controller: App\Controller\UsersController::editUser
-
-reports:
-    path: /reports
-    controller: App\Controller\Installment::index
+    controller: App\Controller\Loan::new

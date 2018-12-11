@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -16,7 +17,7 @@ class Authenticator extends AbstractController
         $session = new Session();
         if ($request->hasSession() && ($session = $request->getSession())) {
             if ($session->get('logged') == true) {
-                return $this->redirectToRoute('reports');
+                return $this->redirectToRoute('users');
             }
         }
 
@@ -26,7 +27,7 @@ class Authenticator extends AbstractController
 
         $form = $this->createFormBuilder($user)
             ->add('email', TextType::class,    ['label' => "E-mail: "])
-            ->add('password', TextType::class,    ['label' => "Senha: "])
+            ->add('password', PasswordType::class,    ['label' => "Senha: "])
             ->add('save', SubmitType::class, array('label' => 'Entrar'))
             ->getForm();
 
@@ -50,7 +51,7 @@ class Authenticator extends AbstractController
                 $session->set('user_id', $user->getId());
                 $session->set('logged', true);
 
-                return $this->redirectToRoute('register_user');
+                return $this->redirectToRoute('users');
             }
         }
 

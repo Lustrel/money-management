@@ -1,0 +1,57 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {{ parent() ~ 'Empréstimos' }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center">Listagem de empréstimos</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-primary" href="/create_loan">Adicionar</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Periodo de pagamento</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Quan. parcelas</th>
+                        <th scope="col">Juros</th>
+                        <th scope="col">Desconto</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for loan in loans %}
+                        <tr>
+                            <th scope="row">{{ loan.id }}</th>
+                            <td>{{ loan.customer.name }}</td>
+                            <td>{{ loan.installmentperiod.name }}</td>
+                            <td>{{ 'R$ ' ~ loan.borrowedvalue }}</td>
+                            <td>{{ loan.totalinstallments }}</td>
+                            <td>{{ loan.monthlyfee ~ '%' }}</td>
+                            <td>{{ loan.discount ~ '%' }}</td>
+                            <td>
+                                <a class="btn btn-secondary btn-sm" href="/edit_loan/{{ loan.id }}">Editar</a>
+                                <a class="btn btn-danger btn-sm" href="/remove_loan/{{ loan.id }}">Remover</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
