@@ -26,7 +26,7 @@ class Loan extends AbstractController
             ->getRepository(LoanEntity::class)
             ->findAll();
 
-        return $this->render('loans.html.twig', array(
+        return $this->render('loan/loans.html.twig', array(
             'loans' => $loans,
         ));
     }
@@ -97,7 +97,7 @@ class Loan extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->render('create-loan.html.twig', array(
+        return $this->render('loan/create-loan.html.twig', array(
             'form' => $form->createView(),
         ));
     }
