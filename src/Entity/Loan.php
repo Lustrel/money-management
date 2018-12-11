@@ -63,6 +63,14 @@ class Loan
     private $installments;
 
     /**
+     * Loan constructor.
+     */
+    public function __construct()
+    {
+        $this->installments = new ArrayCollection();
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
