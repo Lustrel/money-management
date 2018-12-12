@@ -1,24 +1,32 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Loan;
-use App\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Installment as InstallmentEntity;
+use App\Entity\User as UserEntity;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TelType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class Installment extends Controller
 {
     public function index(Request $request)
     {
-        return $this->render('installments.html.twig', array('installments' => []));
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
+
+        $doctrine = $this->getDoctrine();
+
+        $currentUser = $doctrine
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
+
+        $installments = $doctrine
+            ->getRepository(InstallmentEntity::class)
+            ->findBySellerUser($currentUser);
+
+        return $this->render('installment/index.html.twig', array(
+            'installments' => $installments,
+        ));
     }
 }

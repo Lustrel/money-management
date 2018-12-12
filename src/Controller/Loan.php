@@ -21,6 +21,12 @@ class Loan extends AbstractController
 {
     public function index(Request $request)
     {
+        // @todo: should be moved to a wrapper service
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
+
         $loans = $this
             ->getDoctrine()
             ->getRepository(LoanEntity::class)
@@ -33,6 +39,12 @@ class Loan extends AbstractController
 
     public function new(Request $request)
     {
+        // @todo: should be moved to a wrapper service
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
+
         $loan = new LoanEntity();
 
         $form = $this->createFormBuilder($loan)

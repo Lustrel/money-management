@@ -30,14 +30,14 @@
                     {% for installment in installments %}
                         <tr>
                             <th scope="row">{{ installment.id }}</th>
-                            <td>{{ installment.customer.name}}</td>
-                            <td>{{ installment.customer.document_number }}</td>
-                            <td>{{ installment.value }}</td>
-                            <td>{{ installment.due_date }}</td>
-                            <td>{{ 'A receber' }}</td>
+                            <td>{{ installment.loan.customer.name}}</td>
+                            <td>{{ installment.loan.customer.documentnumber }}</td>
+                            <td>{{ 'R$ ' ~ installment.value }}</td>
+                            <td>{{ installment.duedate | date('d/m/Y') }}</td>
+                            <td><span class="badge badge-pill badge-secondary">{{ installment.status.name }}</span></td>
                             <td>
-                                <a class="btn btn-secondary btn-sm" href="/edit_user/{{ user.id }}">Editar</a>
-                                <a class="btn btn-danger btn-sm" href="/remove_user/{{ user.id }}">Remover</a>
+                                <a class="btn btn-secondary btn-sm" href="/edit_user/{{ installment.id }}">Editar</a>
+                                <a class="btn btn-danger btn-sm" href="/remove_user/{{ installment.id }}">Remover</a>
                             </td>
                         </tr>
                     {% endfor %}

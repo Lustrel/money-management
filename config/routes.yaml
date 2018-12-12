@@ -41,3 +41,7 @@ loans:
 create_loan:
     path: /create_loan
     controller: App\Controller\Loan::new
+
+installments:
+    path: /installments
+    controller: App\Controller\Installment:index

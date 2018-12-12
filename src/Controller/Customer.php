@@ -17,6 +17,12 @@ class Customer extends AbstractController
 {
     public function index(Request $request)
     {
+        // @todo: should be moved to a wrapper service
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
+
         $customers = $this
             ->getDoctrine()
             ->getRepository(CustomerEntity::class)
@@ -29,6 +35,11 @@ class Customer extends AbstractController
 
     public function new(Request $request)
     {
+        // @todo: should be moved to a wrapper service
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
 
         $customer = new CustomerEntity();
 
@@ -76,6 +87,12 @@ class Customer extends AbstractController
 
     public function edit(Request $request, $id)
     {
+        // @todo: should be moved to a wrapper service
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
+
         $customer = $this
             ->getDoctrine()
             ->getRepository(CustomerEntity::class)
@@ -114,7 +131,7 @@ class Customer extends AbstractController
         ));
     }
 
-    public function remove(Request $resquest, $id)
+    public function remove(Request $request, $id)
     {
         $customer = $this
             ->getDoctrine()

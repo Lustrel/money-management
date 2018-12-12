@@ -48,7 +48,7 @@ class Authenticator extends AbstractController
                 /** @var \App\Entity\User $user */
                 $user = $loggedUser[0];
 
-                $session->set('user_id', $user->getId());
+                $session->set('logged_user_id', $user->getId());
                 $session->set('logged', true);
 
                 return $this->redirectToRoute('users');

@@ -16,6 +16,12 @@ class User extends AbstractController
 {
     public function index(Request $request)
     {
+        // @todo: should be moved to a wrapper service
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
+
         $users = $this
             ->getDoctrine()
             ->getRepository(UserEntity::class)
@@ -28,6 +34,12 @@ class User extends AbstractController
 
     public function new(Request $request)
     {
+        // @todo: should be moved to a wrapper service
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
+
         $user = new UserEntity();
 
         $form = $this->createFormBuilder($user)
@@ -63,6 +75,12 @@ class User extends AbstractController
 
     public function edit(Request $request, $id)
     {
+        // @todo: should be moved to a wrapper service
+        $session = $request->getSession();
+        if (!$session || !$session->get('logged_user_id')) {
+            return $this->redirect('/');
+        }
+
         $user = $this
             ->getDoctrine()
             ->getRepository(UserEntity::class)
