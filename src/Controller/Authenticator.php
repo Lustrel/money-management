@@ -59,4 +59,14 @@ class Authenticator extends AbstractController
             'form' => $form->createView(),
         ));
     }
+
+    public function logout(Request $request)
+    {
+        if ($request->hasSession() && ($session = $request->getSession())) {
+            $session->set('logged', false);
+            $session->set('logged_user_id', null);
+        }
+
+        return $this->redirect('/');
+    }
 }

@@ -20,7 +20,7 @@ class CustomersRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return Customer[] Returns an array of Customer objects
+    //  * @return CustomerAdministrator[] Returns an array of CustomerAdministrator objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class CustomersRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Customer
+    public function findOneBySomeField($value): ?CustomerAdministrator
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')

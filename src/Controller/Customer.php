@@ -17,16 +17,32 @@ class Customer extends AbstractController
 {
     public function index(Request $request)
     {
+        $customerRepository = $this->getDoctrine()->getRepository(CustomerEntity::class);
+
         // @todo: should be moved to a wrapper service
         $session = $request->getSession();
         if (!$session || !$session->get('logged_user_id')) {
             return $this->redirect('/');
         }
 
-        $customers = $this
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
             ->getDoctrine()
-            ->getRepository(CustomerEntity::class)
-            ->findAll();
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
+
+        $customers = array();
+        if ($loggedUser->isAdministrator() || $loggedUser->isManager())
+        {
+            $customers = $customerRepository->findAll();
+        }
+        else if ($loggedUser->isSeller())
+        {
+            $customers = $customerRepository->findBy(array(
+                'user' => $loggedUser,
+            ));
+        }
 
         return $this->render('customer/index.html.twig', array(
             'customers' => $customers

@@ -163,4 +163,28 @@ class User
         $this->name = $name;
         return $this;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isAdministrator()
+    {
+        return $this->getRole()->getId() == 1;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isManager()
+    {
+        return $this->getRole()->getId() == 2;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSeller()
+    {
+        return $this->getRole()->getId() == 3;
+    }
 }

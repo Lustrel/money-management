@@ -63,7 +63,7 @@ class Loan extends AbstractController
                 'class' => InstallmentPeriodEntity::class,
                 'choice_label' => 'name'
             ])
-            ->add('comments', TextareaType::class, ['label' => 'Observações'])
+            ->add('comments', TextareaType::class, ['label' => 'Observações', 'required' => false])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
 

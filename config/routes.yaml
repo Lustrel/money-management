@@ -2,6 +2,10 @@ index:
     path: /
     controller: App\Controller\Authenticator::new
 
+logout:
+    path: /logout
+    controller: App\Controller\Authenticator::logout
+
 users:
     path: /users
     controller: App\Controller\User::index
