@@ -37,19 +37,18 @@ remove_customer:
     controller: App\Controller\Customer::remove
 
 #Routes for Loan
+loans:
+    path: /loans
+    controller: App\Controller\Loan::index
+
 create_loan:
     path: /create_loan
-    controller: App\Controller\CreateLoan::new
+    controller: App\Controller\Loan::new
 
-author_search:
-    path: /user_search
-    controller: App\Controller\CreateLoan::searchUser
+edit_loan:
+    path: /edit_loan/{id}
+    controller: App\Controller\Loan::edit
 
-author_get:
-    path: /author_get
-    controller: App\Controller\CreateLoan::getUser
-
-
-reports:
-    path: /reports
-    controller: App\Controller\ReportController::new
+remove_loan:
+    path: /remove_loan/{id}
+    controller: App\Controller\Loan::remove

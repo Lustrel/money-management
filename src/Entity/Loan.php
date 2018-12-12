@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LoansRepository")
  * @ORM\Table(name="loans")
@@ -55,9 +58,17 @@ class Loan
     private $installment_period;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Installment", mappedBy="loan")
+     * @ORM\OneToMany(targetEntity="App\Entity\Installment", mappedBy="loan", cascade={"remove"})
      */
     private $installments;
+
+    /**
+     * Loan constructor.
+     */
+    public function __construct()
+    {
+        $this->installments = new ArrayCollection();
+    }
 
     /**
      * @return mixed
