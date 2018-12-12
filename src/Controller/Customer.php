@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
@@ -22,8 +23,43 @@ class Customer extends AbstractController
             ->getRepository(CustomerEntity::class)
             ->findAll();
 
+        $form = $this->createFormBuilder()
+        ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+        ->add('filterType', ChoiceType::class, array(
+            'label' => "Campo",
+            'choices' => array(
+                'Nome' => 'name',
+                'Número Documento' => 'document_number',
+                'E-mail' => 'email'
+            ),
+        ))
+        ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+        ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+          
+            $data = $form->getData();
+ 
+            $filterCustomers = $this
+            ->getDoctrine()
+            ->getRepository(CustomerEntity::class)
+            ->findBy(array($data['filterType'] => $data['filterText']));
+
+            if($filterCustomers == null){
+                $this->addFlash(
+                    'notice',
+                    'Não há registros com esses dados!'
+                );
+            }else{
+                $customers = $filterCustomers;
+            }
+
+        }
+
         return $this->render('customer/index.html.twig', array(
-            'customers' => $customers
+            'customers' => $customers, 'form' => $form->createView()
         ));
     }
 
