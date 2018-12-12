@@ -34,10 +34,10 @@
                             <td>{{ installment.loan.customer.documentnumber }}</td>
                             <td>{{ 'R$ ' ~ installment.value }}</td>
                             <td>{{ installment.duedate | date('d/m/Y') }}</td>
-                            <td><span class="badge badge-pill badge-secondary">{{ installment.status.name }}</span></td>
+                            <td>{{ installment.status.name }}</span></td>
                             <td>
-                                <a class="btn btn-secondary btn-sm" href="/edit_user/{{ installment.id }}">Editar</a>
-                                <a class="btn btn-danger btn-sm" href="/remove_user/{{ installment.id }}">Remover</a>
+                                <a class="btn btn-secondary btn-sm" href="/pay_installment/{{ installment.id }}">Dar baixa</a>
+                                <a class="btn btn-secondary btn-sm" href="/edit_installment/{{ installment.id }}">Editar</a>
                             </td>
                         </tr>
                     {% endfor %}
