@@ -18,28 +18,37 @@
 <body>
     {% block header %}
         <nav class="navbar navbar-light bg-light">
-            <a class="navbar-brand" href="/"><img  width="300" height="100" src="{{ asset('assets/img/logo.png') }}"/></a>
+            <a class="navbar-brand" style="margin: 0 auto" href="/"><img  width="180" height="100" src="{{ asset('assets/img/logo.png') }}"/></a>
         </nav>
-        <nav class="navbar navbar-expand-lg navbar-light bg-success">
+        <nav style="margin-bottom: 50px" class="navbar navbar-expand-lg navbar-light bg-success">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse " id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto font-weight-bold">
-                    <li class="nav-item active">
-                        <a class="nav-link text-white" href="/customers">Clientes <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link text-white" href="/users">Usuários</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="/loans">Empréstimos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="/installments">Parcelas</a>
-                    </li>
-                </ul>
+                {%  if loggedUser is defined %}
+                    <ul style="margin: 0 auto" class="navbar-nav mr-auto font-weight-bold">
+                        {% if loggedUser is defined and loggedUser.administrator %}
+                            <li class="nav-item ">
+                                <a class="nav-link text-white" href="/users">Usuários</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" href="/customers">Clientes <span class="sr-only">(current)</span></a>
+                        </li>
+                        {% if loggedUser is defined and loggedUser.administrator %}
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="/loans">Empréstimos</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/installments">Parcelas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/logout">Sair</a>
+                        </li>
+                    </ul>
+                {% endif %}
             </div>
         </nav>
     {% endblock %}
@@ -48,10 +57,11 @@
     {% block body %}{% endblock %}
 
     {% block footer %}
+        <!--
         <footer class="bg-success">
             <p class="text-right font-weight-bold text-white mr-3">DESENVOLVIDO POR ZEIT BRASIL</p>
-            <p class="text-right"><a class="text-white" href="/logout">Sair do sistema</a></p>
         </footer>
+        -->
     {% endblock footer %}
 
     {% block javascripts %}{% endblock %}

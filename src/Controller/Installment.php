@@ -18,18 +18,22 @@ class Installment extends Controller
             return $this->redirect('/');
         }
 
-        $doctrine = $this->getDoctrine();
-
-        $currentUser = $doctrine
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
             ->getRepository(UserEntity::class)
             ->find($session->get('logged_user_id'));
 
+        $doctrine = $this->getDoctrine();
+
         $installments = $doctrine
             ->getRepository(InstallmentEntity::class)
-            ->findBySellerUser($currentUser);
+            ->findAll();
 
         return $this->render('installment/index.html.twig', array(
             'installments' => $installments,
+            'loggedUser' => $loggedUser,
         ));
     }
 
@@ -40,6 +44,13 @@ class Installment extends Controller
         if (!$session || !$session->get('logged_user_id')) {
             return $this->redirect('/');
         }
+
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
 
         $entityManager = $this
             ->getDoctrine()
@@ -101,6 +112,7 @@ class Installment extends Controller
 
         return $this->render('installment/pay.html.twig', array(
             'form' => $form->createView(),
+            'loggedUser' => $loggedUser,
         ));
     }
 }

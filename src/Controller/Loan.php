@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User as UserEntity;
 use App\Entity\Customer as CustomerEntity;
 use App\Entity\InstallmentPeriod as InstallmentPeriodEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
@@ -14,9 +15,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use \DateTime;
-
 class Loan extends AbstractController
 {
     public function index(Request $request)
@@ -27,6 +25,13 @@ class Loan extends AbstractController
             return $this->redirect('/');
         }
 
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
+
         $loans = $this
             ->getDoctrine()
             ->getRepository(LoanEntity::class)
@@ -34,6 +39,7 @@ class Loan extends AbstractController
 
         return $this->render('loan/loans.html.twig', array(
             'loans' => $loans,
+            'loggedUser' => $loggedUser,
         ));
     }
 
@@ -44,6 +50,13 @@ class Loan extends AbstractController
         if (!$session || !$session->get('logged_user_id')) {
             return $this->redirect('/');
         }
+
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
 
         $loan = new LoanEntity();
 
@@ -107,10 +120,13 @@ class Loan extends AbstractController
                 $firstInstallmentDate = $firstInstallmentDate->modify($installmentPeriod);             
             }
             $entityManager->flush();
+
+            return $this->redirectToRoute('/loans');
         }
 
         return $this->render('loan/create-loan.html.twig', array(
             'form' => $form->createView(),
+            'loggedUser' => $loggedUser,
         ));
     }
 }

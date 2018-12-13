@@ -23,7 +23,7 @@ class Customer
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=14)
+     * @ORM\Column(type="string", length=255)
      */
     private $document_number;
 
@@ -33,7 +33,7 @@ class Customer
     private $email;
 
     /**
-     * @ORM\Column(type="string", columnDefinition="CHAR(12)")
+     * @ORM\Column(type="string", length=255)
      */
     private $phone;
 

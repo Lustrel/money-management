@@ -32,20 +32,11 @@ class Customer extends AbstractController
             ->getRepository(UserEntity::class)
             ->find($session->get('logged_user_id'));
 
-        $customers = array();
-        if ($loggedUser->isAdministrator() || $loggedUser->isManager())
-        {
-            $customers = $customerRepository->findAll();
-        }
-        else if ($loggedUser->isSeller())
-        {
-            $customers = $customerRepository->findBy(array(
-                'user' => $loggedUser,
-            ));
-        }
+        $customers = $customerRepository->findAll();
 
         return $this->render('customer/index.html.twig', array(
-            'customers' => $customers
+            'customers' => $customers,
+            'loggedUser' => $loggedUser,
         ));
     }
 
@@ -56,6 +47,13 @@ class Customer extends AbstractController
         if (!$session || !$session->get('logged_user_id')) {
             return $this->redirect('/');
         }
+
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
 
         $customer = new CustomerEntity();
 
@@ -68,7 +66,8 @@ class Customer extends AbstractController
                 'class' => UserEntity::class,
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('user')
-                    ->where('user.role = 3');
+                    ->where('user.role = 3')
+                    ->andWhere("user.activeStatus = 'A'");
                 },
                 'choice_label' => 'name',
                 'label' => "Vendedor",
@@ -98,6 +97,7 @@ class Customer extends AbstractController
 
         return $this->render('customer/create.html.twig', array(
             'form' => $form->createView(),
+            'loggedUser' => $loggedUser,
         ));
     }
 
@@ -108,6 +108,13 @@ class Customer extends AbstractController
         if (!$session || !$session->get('logged_user_id')) {
             return $this->redirect('/');
         }
+
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
 
         $customer = $this
             ->getDoctrine()
@@ -144,6 +151,7 @@ class Customer extends AbstractController
 
         return $this->render('edit-customer.html.twig', array(
             'form' => $form->createView(),
+            'loggedUser' => $loggedUser,
         ));
     }
 

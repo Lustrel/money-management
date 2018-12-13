@@ -22,13 +22,23 @@ class User extends AbstractController
             return $this->redirect('/');
         }
 
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
+
         $users = $this
             ->getDoctrine()
             ->getRepository(UserEntity::class)
-            ->findAll();
+            ->findBy(array(
+                'activeStatus' => 'A',
+            ));
 
         return $this->render('users.html.twig', array(
             'users' => $users,
+            'loggedUser' => $loggedUser,
         ));
     }
 
@@ -39,6 +49,13 @@ class User extends AbstractController
         if (!$session || !$session->get('logged_user_id')) {
             return $this->redirect('/');
         }
+
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
 
         $user = new UserEntity();
 
@@ -56,6 +73,7 @@ class User extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
 
+            $user->setActiveStatus('A');
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
@@ -70,6 +88,7 @@ class User extends AbstractController
 
         return $this->render('create-user.html.twig', array(
             'form' => $form->createView(),
+            'loggedUser' => $loggedUser,
         ));
     }
 
@@ -80,6 +99,13 @@ class User extends AbstractController
         if (!$session || !$session->get('logged_user_id')) {
             return $this->redirect('/');
         }
+
+        // Get currently logged user
+        /** @var UserEntity $loggedUser */
+        $loggedUser = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->find($session->get('logged_user_id'));
 
         $user = $this
             ->getDoctrine()
@@ -115,6 +141,7 @@ class User extends AbstractController
 
         return $this->render('edit-user.html.twig', array(
             'form' => $form->createView(),
+            'loggedUser' => $loggedUser,
         ));
     }
 
@@ -125,8 +152,10 @@ class User extends AbstractController
             ->getRepository(UserEntity::class)
             ->findOneBy(array('id' => $id));
 
+        $user->setActiveStatus('D');
+
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($user);
+        $entityManager->persist($user);
         $entityManager->flush();
 
         $this->addFlash(

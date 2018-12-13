@@ -23,12 +23,12 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=255)
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", columnDefinition="CHAR(12)")
+     * @ORM\Column(type="string", length=255)
      */
     private $phone;
 
@@ -47,6 +47,11 @@ class User
      * @ORM\Column(type="string", length=255)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $activeStatus;
 
     /**
      * @return mixed
@@ -186,5 +191,23 @@ class User
     public function isSeller()
     {
         return $this->getRole()->getId() == 3;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActiveStatus()
+    {
+        return $this->activeStatus;
+    }
+
+    /**
+     * @param $activeStatus
+     * @return $this
+     */
+    public function setActiveStatus($activeStatus)
+    {
+        $this->activeStatus = $activeStatus;
+        return $this;
     }
 }

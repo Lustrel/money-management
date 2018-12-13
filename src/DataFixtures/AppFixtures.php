@@ -55,6 +55,7 @@ class AppFixtures extends Fixture
             ->setEmail('admin@exemplo.com')
             ->setPassword('admin123')
             ->setPhone('31 998001111')
+            ->setActiveStatus('A')
             ->setRole($this->getReference('admin-role'));
 
         $sellerUser = (new UserEntity())
@@ -62,6 +63,7 @@ class AppFixtures extends Fixture
             ->setEmail('herculano@exemplo.com')
             ->setPassword('admin123')
             ->setPhone('31 998011111')
+            ->setActiveStatus('A')
             ->setRole($this->getReference('seller-role'));
 
         $this->addReference('seller-user', $sellerUser);

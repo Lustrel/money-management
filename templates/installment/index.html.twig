@@ -23,7 +23,9 @@
                         <th scope="col">Valor</th>
                         <th scope="col">Vencimento</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Ações</th>
+                        {% if loggedUser is defined and loggedUser.administrator %}
+                            <th scope="col">Ações</th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
@@ -35,9 +37,11 @@
                             <td>{{ 'R$ ' ~ installment.value }}</td>
                             <td>{{ installment.duedate | date('d/m/Y') }}</td>
                             <td>{{ installment.status.name }}</span></td>
-                            <td>
-                                <a class="btn btn-secondary btn-sm" href="/pay_installment/{{ installment.id }}">Dar baixa</a>
-                            </td>
+                            {% if loggedUser is defined and loggedUser.administrator %}
+                                <td>
+                                    <a class="btn btn-secondary btn-sm" href="/pay_installment/{{ installment.id }}">Dar baixa</a>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

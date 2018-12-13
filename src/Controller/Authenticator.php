@@ -17,10 +17,9 @@ class Authenticator extends AbstractController
         $session = new Session();
         if ($request->hasSession() && ($session = $request->getSession())) {
             if ($session->get('logged') == true) {
-                return $this->redirectToRoute('users');
+                return $this->redirectToRoute('installments');
             }
         }
-
 
         // creates a user and gives it some dummy data for this example
         $user = new User();
@@ -38,7 +37,7 @@ class Authenticator extends AbstractController
 
             $loggedUser = $this->getDoctrine()
                 ->getRepository(User::class)
-                ->findBy(array('email' => $user->getEmail(), 'password' =>$user->getPassword()));
+                ->findBy(array('email' => $user->getEmail(), 'password' =>$user->getPassword(), 'activeStatus' => 'A'));
 
             if ($loggedUser == null) {
                 echo "Login ou senha incorretos";
@@ -51,7 +50,7 @@ class Authenticator extends AbstractController
                 $session->set('logged_user_id', $user->getId());
                 $session->set('logged', true);
 
-                return $this->redirectToRoute('users');
+                return $this->redirectToRoute('installments');
             }
         }
 
