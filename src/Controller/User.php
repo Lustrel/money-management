@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 
 class User extends AbstractController
@@ -21,8 +22,40 @@ class User extends AbstractController
             ->getRepository(UserEntity::class)
             ->findAll();
 
-        return $this->render('users.html.twig', array(
-            'users' => $users,
+        $form = $this->createFormBuilder()
+        ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+        ->add('filterType', ChoiceType::class, array(
+            'label' => "Campo",
+            'choices' => array(
+                'Nome' => 'name',
+                'E-mail' => 'email'
+            ),
+        ))
+        ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+        ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+          
+            $data = $form->getData();
+ 
+            $filterUsers = $this
+            ->getDoctrine()
+            ->getRepository(UserEntity::class)
+            ->findBy(array($data['filterType'] => $data['filterText']));
+            if($filterUsers == null){
+                $this->addFlash(
+                    'notice',
+                    'Não há registros com esses dados!'
+                );
+            }else{
+                $users = $filterUsers;
+            }
+        }
+
+        return $this->render('user/users.html.twig', array(
+            'users' => $users, 'form' => $form->createView()
         ));
     }
 
@@ -56,7 +89,7 @@ class User extends AbstractController
             return $this->redirectToRoute('users');
         }
 
-        return $this->render('create-user.html.twig', array(
+        return $this->render('user/create-user.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -95,7 +128,7 @@ class User extends AbstractController
             return $this->redirectToRoute('users');
         }
 
-        return $this->render('edit-user.html.twig', array(
+        return $this->render('user/edit-user.html.twig', array(
             'form' => $form->createView(),
         ));
     }

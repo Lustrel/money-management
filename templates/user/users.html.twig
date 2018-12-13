@@ -15,6 +15,24 @@
             </div>
         </div>
 
+        {{ form_start(form) }}
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">{{ form.filterType.vars.label }}</span>
+            </div>
+            {{ form_widget(form.filterType) }}
+        </div>
+      
+       <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">{{ form.filterText.vars.label }}</span>
+            </div>
+            {{ form_widget(form.filterText) }}
+        </div>
+
+        {{ form_end(form) }}
+
         <div class="row">
             <div class="col">
                 <a class="btn btn-primary" href="/create_user">Adicionar</a>
