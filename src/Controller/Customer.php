@@ -69,8 +69,8 @@ class Customer extends AbstractController
         $customer = new CustomerEntity();
 
         $form = $this->createFormBuilder($customer)
-            ->add('name', TextType::class, ['label' => "Nome Completo"])
-            ->add('document_number', TextType::class, ['label' => "Número documento"])
+            ->add('name', TextType::class, ['label' => "Nome completo do cliente"])
+            ->add('document_number', TextType::class, ['label' => "Número do documento (CPF ou CNPJ)"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
             ->add('phone', TextType::class, ['label' => "Telefone"])
             ->add('user',EntityType::class, [
@@ -80,7 +80,7 @@ class Customer extends AbstractController
                     ->where('user.role = 3');
                 },
                 'choice_label' => 'name',
-                'label' => "Vendedor",
+                'label' => "Vendedor responsável",
                 'placeholder' => 'Selecione um vendedor',
                 'required' => true    
             ])
@@ -145,7 +145,7 @@ class Customer extends AbstractController
             return $this->redirectToRoute('customers');
         }
 
-        return $this->render('edit-customer.html.twig', array(
+        return $this->render('customer/edit-customer.html.twig', array(
             'form' => $form->createView(),
         ));
     }

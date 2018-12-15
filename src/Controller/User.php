@@ -67,7 +67,7 @@ class User extends AbstractController
         $user = new UserEntity();
 
         $form = $this->createFormBuilder($user)
-            ->add('name', TextType::class, ['label' => "Nome completo"])
+            ->add('name', TextType::class, ['label' => "Nome do usuário"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
             ->add('password', RepeatedType::class, array(
                 'type' => PasswordType::class,
@@ -79,7 +79,7 @@ class User extends AbstractController
             ))
             ->add('phone', TelType::class, ['label' => 'Telefone'])
             ->add('role', EntityType::class, array(
-                'label' => 'Cargo',
+                'label' => 'Cargo do usuário',
                 'class' => RoleEntity::class,
                 'choice_label' => 'name'))
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])

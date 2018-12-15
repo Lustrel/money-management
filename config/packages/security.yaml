@@ -29,6 +29,11 @@ security:
         - { path: ^/remove_user, roles: ROLE_ADMIN }
         - { path: ^/users, roles: ROLE_ADMIN }
 
+        # Customer
+        - { path: ^/create_customer, roles: ROLE_ADMIN }
+        - { path: ^/edit_customer, roles: ROLE_ADMIN }
+        - { path: ^/remove_customer, roles: ROLE_ADMIN }
+        - { path: ^/customers, roles: IS_AUTHENTICATED_FULLY }
 
-        - { path: /customers, roles: IS_AUTHENTICATED_FULLY }
+
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
