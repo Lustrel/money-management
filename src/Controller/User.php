@@ -11,7 +11,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 class User extends AbstractController
 {
@@ -59,23 +62,34 @@ class User extends AbstractController
         ));
     }
 
-    public function new(Request $request)
+    public function new(Request $request, UserPasswordEncoderInterface $encoder)
     {
         $user = new UserEntity();
 
         $form = $this->createFormBuilder($user)
             ->add('name', TextType::class, ['label' => "Nome completo"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
-            ->add('password', PasswordType::class, ['label' => "Senha"])
+            ->add('password', RepeatedType::class, array(
+                'type' => PasswordType::class,
+                'invalid_message' => 'Os campos da senha devem corresponder.',
+                'options' => array('attr' => ['class' => 'password-field']),
+                'required' => true,
+                'first_options'  => ['label' => 'Senha'],
+                'second_options' => ['label' => 'Repetir senha'],
+            ))
             ->add('phone', TelType::class, ['label' => 'Telefone'])
-            ->add('role', EntityType::class, ['label' => 'Cargo', 'class' => RoleEntity::class, 'choice_label' => 'name'])
-            ->add('save', SubmitType::class, array('label' => 'Cadastrar'))
+            ->add('role', EntityType::class, array(
+                'label' => 'Cargo',
+                'class' => RoleEntity::class,
+                'choice_label' => 'name'))
+            ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
+            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);

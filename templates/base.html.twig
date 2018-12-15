@@ -45,6 +45,9 @@
     {% endblock %}
 
     <!-- Content always goes here -->
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <a href="{{ logout_path() }}" class="btn btn-danger">Logout</a>
+    {% endif %}
     {% block body %}{% endblock %}
 
     {% block footer %}

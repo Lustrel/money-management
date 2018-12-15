@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UsersRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="users")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -20,10 +21,15 @@ class User
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=50, unique=true, nullable=false)
+     */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=255)
      */
     private $password;
 
@@ -44,16 +50,29 @@ class User
     private $customers;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
-
-    /**
      * @return mixed
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     * @return User
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**
@@ -146,21 +165,39 @@ class User
         return $this;
     }
 
+
+    /**
+     * UserInterface methods 
+     */
+
     /**
      * @return mixed
      */
-    public function getName()
+    public function getUsername()
     {
-        return $this->name;
+        return $this->email;
     }
 
     /**
-     * @param mixed $name
-     * @return User
+     * @return mixed
      */
-    public function setName($name)
+    public function getRoles()
     {
-        $this->name = $name;
-        return $this;
+        if($this->role->getId() == 1){
+            return [
+                'ROLE_ADMIN'
+            ];
+        }else{
+            return [
+                'ROLE_USER'
+            ];
+        }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSalt(){}
+
+    public function eraseCredentials(){}
 }
