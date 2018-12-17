@@ -1,6 +1,6 @@
 {% use "bootstrap_4_layout.html.twig" %}
 
-{% extends "base.html.twig" %}
+{% extends "login/base-login.html.twig" %}
 
 {% block title %}
     {{ parent() ~ 'Login' }}
@@ -16,10 +16,10 @@
         {% endif %}
         <form action="{{ path('login') }}" method="post">
             <label for="username">Email:</label>
-            <input type="text" name="_username" id="username" value="{{ username }}"/>
+            <input type="text" name="_username" id="username" required="true" value="{{ username }}"/>
 
             <label for="password">Password:</label>
-            <input type="password" name="_password" id="password"/>
+            <input type="password" name="_password" id="password" required="true"/>
 
             <button class="btn btn-info">Logar</button>
         </form>

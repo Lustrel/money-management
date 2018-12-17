@@ -16,6 +16,24 @@
             </div>
         </div>
 
+        {{ form_start(form) }}
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">{{ form.filterType.vars.label }}</span>
+            </div>
+            {{ form_widget(form.filterType) }}
+        </div>
+      
+       <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">{{ form.filterText.vars.label }}</span>
+            </div>
+            {{ form_widget(form.filterText) }}
+        </div>
+
+        {{ form_end(form) }}
+
         <div class="row">
             <div class="col">
                 <a class="btn btn-primary" href="/create_loan">Adicionar</a>
@@ -34,7 +52,9 @@
                         <th scope="col">Quan. parcelas</th>
                         <th scope="col">Juros</th>
                         <th scope="col">Desconto</th>
-                        <th scope="col">Ações</th>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <th scope="col">Ações</th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
@@ -47,10 +67,12 @@
                             <td>{{ loan.totalinstallments }}</td>
                             <td>{{ loan.monthlyfee ~ '%' }}</td>
                             <td>{{ loan.discount ~ '%' }}</td>
-                            <td>
-                                <a class="btn btn-secondary btn-sm" href="/edit_loan/{{ loan.id }}">Editar</a>
-                                <a class="btn btn-danger btn-sm" href="/remove_loan/{{ loan.id }}">Remover</a>
-                            </td>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <td>
+                                    <a class="btn btn-secondary btn-sm" href="/edit_loan/{{ loan.id }}">Editar</a>
+                                    <a class="btn btn-danger btn-sm" href="/remove_loan/{{ loan.id }}">Remover</a>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

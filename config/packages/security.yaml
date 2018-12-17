@@ -35,5 +35,12 @@ security:
         - { path: ^/remove_customer, roles: ROLE_ADMIN }
         - { path: ^/customers, roles: IS_AUTHENTICATED_FULLY }
 
+        #Loan
+        - { path: ^/create_loan, roles: ROLE_ADMIN }
+        - { path: ^/edit_loan, roles: ROLE_ADMIN }
+        - { path: ^/remove_loan, roles: ROLE_ADMIN }
+        - { path: ^/loans, roles: IS_AUTHENTICATED_FULLY }
+
+
 
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
