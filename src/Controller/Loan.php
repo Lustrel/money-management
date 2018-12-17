@@ -86,6 +86,7 @@ class Loan extends AbstractController
                 'required' => false
             ))
             ->add('installments', DateType::class, array(
+                'widget' => 'single_text',
                 'label' => 'Data de vencimento da primeira parcela',
                 'mapped' => false
             ))
