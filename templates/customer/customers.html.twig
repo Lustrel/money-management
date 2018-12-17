@@ -16,11 +16,31 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col">
-                <a class="btn btn-primary" href="/create_customer">Adicionar</a>
+        {{ form_start(form) }}
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">{{ form.filterType.vars.label }}</span>
             </div>
+            {{ form_widget(form.filterType) }}
         </div>
+      
+       <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">{{ form.filterText.vars.label }}</span>
+            </div>
+            {{ form_widget(form.filterText) }}
+        </div>
+
+        {{ form_end(form) }}
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-primary" href="/create_customer">Adicionar</a>
+                </div>
+            </div>
+        {% endif %}
 
         <div class="row">
             <div class="col">
@@ -33,7 +53,9 @@
                         <th scope="col">E-mail</th>
                         <th scope="col">Telefone</th>
                         <th scope="col">Vendedor</th>
-                        <th scope="col">Ações</th>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <th scope="col">Ações</th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
@@ -45,10 +67,12 @@
                             <td>{{ customer.email }}</td>
                             <td>{{ customer.phone }}</td>
                             <td>{{ customer.user.name }}</td>
-                            <td>
-                                <a class="btn btn-secondary btn-sm" href="/edit_customer/{{ customer.id }}">Editar</a>
-                                <a class="btn btn-danger btn-sm" href="/edit_customer/{{ customer.id }}">Remover</a>
-                            </td>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <td>
+                                    <a class="btn btn-secondary btn-sm" href="/edit_customer/{{ customer.id }}">Editar</a>
+                                    <a class="btn btn-danger btn-sm" href="/edit_customer/{{ customer.id }}">Remover</a>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

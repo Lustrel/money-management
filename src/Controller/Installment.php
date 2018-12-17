@@ -12,35 +12,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class Installment extends Controller
 {
     public function index(Request $request)
-    {
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
-        $doctrine = $this->getDoctrine();
-
-        $currentUser = $doctrine
-            ->getRepository(UserEntity::class)
-            ->find($session->get('logged_user_id'));
-
-        $installments = $doctrine
+    {    
+        $installments = $this
+            ->getDoctrine()
             ->getRepository(InstallmentEntity::class)
-            ->findBySellerUser($currentUser);
+            ->findAll();
 
-        return $this->render('installment/index.html.twig', array(
+        return $this->render('installment/installments.html.twig', array(
             'installments' => $installments,
         ));
     }
 
     public function pay(Request $request, $id)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $entityManager = $this
             ->getDoctrine()
             ->getManager();

@@ -10,51 +10,90 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 class User extends AbstractController
 {
     public function index(Request $request)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $users = $this
             ->getDoctrine()
             ->getRepository(UserEntity::class)
             ->findAll();
 
-        return $this->render('users.html.twig', array(
+        $form = $this->createFormBuilder()
+            ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+            ->add('filterType', ChoiceType::class, array(
+                'label' => "Campo",
+                'choices' => array(
+                    'Nome' => 'name',
+                    'E-mail' => 'email',
+                ),
+            ))
+            ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $filterUsers = $this
+                ->getDoctrine()
+                ->getRepository(UserEntity::class)
+                ->findBy(array($data['filterType'] => $data['filterText']));
+            
+            if($filterUsers == null)
+            {
+                $this->addFlash(
+                    'notice',
+                    'Não há registros com esses dados!'
+                );
+            }else
+            {
+                $users = $filterUsers;
+            }
+        }
+
+        return $this->render('user/users.html.twig', array(
             'users' => $users,
+            'form' => $form->createView(),
         ));
     }
 
-    public function new(Request $request)
+    public function new(Request $request, UserPasswordEncoderInterface $encoder)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $user = new UserEntity();
 
         $form = $this->createFormBuilder($user)
-            ->add('name', TextType::class, ['label' => "Nome completo"])
+            ->add('name', TextType::class, ['label' => "Nome do usuário"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
-            ->add('password', PasswordType::class, ['label' => "Senha"])
+            ->add('password', RepeatedType::class, array(
+                'type' => PasswordType::class,
+                'invalid_message' => 'Os campos da senha devem corresponder.',
+                'options' => array('attr' => ['class' => 'password-field']),
+                'required' => true,
+                'first_options'  => ['label' => 'Senha'],
+                'second_options' => ['label' => 'Repetir senha'],
+            ))
             ->add('phone', TelType::class, ['label' => 'Telefone'])
-            ->add('role', EntityType::class, ['label' => 'Cargo', 'class' => RoleEntity::class, 'choice_label' => 'name'])
-            ->add('save', SubmitType::class, array('label' => 'Cadastrar'))
+            ->add('role', EntityType::class, array(
+                'label' => 'Cargo do usuário',
+                'class' => RoleEntity::class,
+                'choice_label' => 'name',
+            ))
+            ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
+            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -68,19 +107,13 @@ class User extends AbstractController
             return $this->redirectToRoute('users');
         }
 
-        return $this->render('create-user.html.twig', array(
+        return $this->render('user/create-user.html.twig', array(
             'form' => $form->createView(),
         ));
     }
 
     public function edit(Request $request, $id)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $user = $this
             ->getDoctrine()
             ->getRepository(UserEntity::class)
@@ -93,7 +126,7 @@ class User extends AbstractController
             ->add('role', EntityType::class, [
                 'label' => 'Cargo',
                 'class' => RoleEntity::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ])
             ->add('save', SubmitType::class, ['label' => 'Editar'])
             ->getForm();
@@ -101,7 +134,6 @@ class User extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
@@ -113,7 +145,7 @@ class User extends AbstractController
             return $this->redirectToRoute('users');
         }
 
-        return $this->render('edit-user.html.twig', array(
+        return $this->render('user/edit-user.html.twig', array(
             'form' => $form->createView(),
         ));
     }

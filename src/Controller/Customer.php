@@ -1,14 +1,13 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Customer as CustomerEntity;
 use App\Entity\User as UserEntity;
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
@@ -17,35 +16,59 @@ class Customer extends AbstractController
 {
     public function index(Request $request)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $customers = $this
             ->getDoctrine()
             ->getRepository(CustomerEntity::class)
             ->findAll();
 
-        return $this->render('customer/index.html.twig', array(
-            'customers' => $customers
+        $form = $this->createFormBuilder()
+            ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+            ->add('filterType', ChoiceType::class, array(
+                'label' => "Campo",
+                'choices' => array(
+                    'Nome' => 'name',
+                    'Número Documento' => 'document_number',
+                    'E-mail' => 'email',
+                ),
+            ))
+            ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+          
+            $data = $form->getData();
+ 
+            $filterCustomers = $this
+                ->getDoctrine()
+                ->getRepository(CustomerEntity::class)
+                ->findBy(array($data['filterType'] => $data['filterText']));
+
+            if($filterCustomers == null){
+                $this->addFlash(
+                    'notice',
+                    'Não há registros com esses dados!'
+                );
+            }else{
+                $customers = $filterCustomers;
+            }
+
+        }
+
+        return $this->render('customer/customers.html.twig', array(
+            'customers' => $customers,
+            'form' => $form->createView()
         ));
     }
 
     public function new(Request $request)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $customer = new CustomerEntity();
 
         $form = $this->createFormBuilder($customer)
-            ->add('name', TextType::class, ['label' => "Nome Completo"])
-            ->add('document_number', TextType::class, ['label' => "Número documento"])
+            ->add('name', TextType::class, ['label' => "Nome completo do cliente"])
+            ->add('document_number', TextType::class, ['label' => "Número do documento (CPF ou CNPJ)"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
             ->add('phone', TextType::class, ['label' => "Telefone"])
             ->add('user',EntityType::class, [
@@ -55,9 +78,9 @@ class Customer extends AbstractController
                     ->where('user.role = 3');
                 },
                 'choice_label' => 'name',
-                'label' => "Vendedor",
+                'label' => "Vendedor responsável",
                 'placeholder' => 'Selecione um vendedor',
-                'required' => true    
+                'required' => true,  
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
@@ -87,12 +110,6 @@ class Customer extends AbstractController
 
     public function edit(Request $request, $id)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $customer = $this
             ->getDoctrine()
             ->getRepository(CustomerEntity::class)
@@ -106,7 +123,7 @@ class Customer extends AbstractController
             ->add('user',EntityType::class, [
                 'class' => UserEntity::class,
                 'choice_label' => 'name',
-                'label' => "Vendedor"
+                'label' => "Vendedor",
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
@@ -126,7 +143,7 @@ class Customer extends AbstractController
             return $this->redirectToRoute('customers');
         }
 
-        return $this->render('edit-customer.html.twig', array(
+        return $this->render('customer/edit-customer.html.twig', array(
             'form' => $form->createView(),
         ));
     }

@@ -58,7 +58,7 @@ class Loan
     private $installment_period;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Installment", mappedBy="loan")
+     * @ORM\OneToMany(targetEntity="App\Entity\Installment", mappedBy="loan", cascade={"remove"})
      */
     private $installments;
 

@@ -7,63 +7,92 @@ use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\Loan as LoanEntity;
 use App\Entity\Installment as InstallmentEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityRepository;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use \DateTime;
 
 class Loan extends AbstractController
 {
     public function index(Request $request)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $loans = $this
             ->getDoctrine()
             ->getRepository(LoanEntity::class)
             ->findAll();
+        
+        $form = $this->createFormBuilder()
+            ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+            ->add('filterType', ChoiceType::class, array(
+                'label' => "Campo",
+                'choices' => array(
+                    'Cliente' => 'name',
+                    'Valor do empréstimo' => 'borrowed_value',
+                ),
+            ))
+            ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $filterLoans = $this->getDoctrine()
+                ->getRepository(LoanEntity::class)
+                ->filterLoan($data);
+           
+            if($filterLoans == null){
+                $this->addFlash(
+                    'notice',
+                    'Não há registros com esses dados!'
+                );
+            }else{
+                $loans = $filterLoans;
+            }
+        }
 
         return $this->render('loan/loans.html.twig', array(
             'loans' => $loans,
+            'form' => $form->createView()
         ));
     }
 
     public function new(Request $request)
     {
-        // @todo: should be moved to a wrapper service
-        $session = $request->getSession();
-        if (!$session || !$session->get('logged_user_id')) {
-            return $this->redirect('/');
-        }
-
         $loan = new LoanEntity();
+        $loan->setMonthlyFee(20);
 
         $form = $this->createFormBuilder($loan)
             ->add('customer', EntityType::class, array(
                 'label' => 'Cliente',
                 'class' => CustomerEntity::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ))
             ->add('borrowedValue', NumberType::class, ['label' => "Valor do empréstimo (R$)"])
-            ->add('totalInstallments', NumberType::class, ['label' => "Qntd. de parcelas"])
-            ->add('monthlyFee', NumberType::class, ['label' => 'Taxa de juros mensal (%)'])
-            ->add('discount', NumberType::class, ['label' => 'Desconto (%)'])
-            ->add('installments', DateType::class, array('label' => 'Data primeira parcela', 'mapped' => false))
-            ->add('installmentPeriod', EntityType::class, [
-                'label' => 'Intervalo de pagamento',
+            ->add('totalInstallments', NumberType::class, ['label' => "Número de parcelas"])
+            ->add('monthlyFee', NumberType::class, ['label' => 'Taxa de juros total (%)'])
+            ->add('discount', NumberType::class, ['label' => 'Desconto no valor total (%)'])
+            ->add('comments', TextareaType::class, array(
+                'label' => 'Observações',
+                'required' => false,
+            ))
+            ->add('installments', DateType::class, array(
+                'widget' => 'single_text',
+                'label' => 'Data de vencimento da primeira parcela',
+                'mapped' => false,
+            ))
+            ->add('installmentPeriod', EntityType::class, array(
+                'label' => 'Período entre cada parcela',
                 'class' => InstallmentPeriodEntity::class,
-                'choice_label' => 'name'
-            ])
-            ->add('comments', TextareaType::class, ['label' => 'Observações'])
+                'choice_label' => 'name',
+            ))
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
 
@@ -106,11 +135,86 @@ class Loan extends AbstractController
                 $entityManager->flush(); 
                 $firstInstallmentDate = $firstInstallmentDate->modify($installmentPeriod);             
             }
-            $entityManager->flush();
+
+            $this->addFlash(
+                'notice',
+                'Empréstimo cadastrado com sucesso!'
+            );
+
+            return $this->redirectToRoute('loans');
+
         }
 
         return $this->render('loan/create-loan.html.twig', array(
             'form' => $form->createView(),
         ));
     }
+
+    public function edit(Request $request, $id)
+    {
+        $loan = $this
+            ->getDoctrine()
+            ->getRepository(LoanEntity::class)
+            ->findOneBy(array(
+                'id' => $id
+            ));
+
+        $form = $this->createFormBuilder($loan)
+            ->add('customer', EntityType::class, array(
+                'label' => 'Cliente',
+                'class' => CustomerEntity::class,
+                'choice_label' => 'name',
+            ))
+            ->add('borrowedValue', NumberType::class, ['label' => "Valor do empréstimo (R$)"])
+            ->add('totalInstallments', NumberType::class, ['label' => "Qntd. de parcelas"])
+            ->add('monthlyFee', NumberType::class, ['label' => 'Taxa de juros mensal (%)'])
+            ->add('discount', NumberType::class, ['label' => 'Desconto (%)'])
+            ->add('installmentPeriod', EntityType::class, array(
+                'label' => 'Intervalo de pagamento',
+                'class' => InstallmentPeriodEntity::class,
+                'choice_label' => 'name',
+            ))
+            ->add('comments', TextareaType::class, ['label' => 'Observações'])
+            ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
+            ->getForm();
+
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->flush();
+
+            $this->addFlash(
+                'notice',
+                'Dados do empréstimo foram alterados com sucesso!'
+            );
+
+            return $this->redirectToRoute('loans');
+        }
+
+        return $this->render('loan/edit-loan.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function remove(Request $resquest, $id)
+    {
+        $loan = $this
+            ->getDoctrine()
+            ->getRepository(LoanEntity::class)
+            ->findOneBy(array('id' => $id));
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($loan);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'notice',
+            'Empréstimo removido com sucesso!'
+        );
+
+        return $this->redirectToRoute('loans');
+    }
+
 }

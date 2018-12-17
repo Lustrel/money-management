@@ -1,16 +1,26 @@
 <?php
-namespace App\DataFixtures;
+namespace App\DataFixtures\ORM;
 
 use App\Entity\Customer as CustomerEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\InstallmentPeriod as InstallmentPeriodEntity;
 use App\Entity\Role as RoleEntity;
 use App\Entity\User as UserEntity;
-use Doctrine\Bundle\FixturesBundle\Fixture;
+
+use Doctrine\Common\DataFixtures\FixtureInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class AppFixtures extends Fixture
+class AppFixtures implements FixtureInterface, ContainerAwareInterface
 {
+    private $container;
+
+    private $adminRole;
+    private $managerRole;
+    private $sellerRole;
+    private $sellerUser;
+
     public function load(ObjectManager $manager)
     {
         $this->addRoles($manager);
@@ -31,8 +41,8 @@ class AppFixtures extends Fixture
         $manager->persist($managerRole);
         $manager->persist($sellerRole);
 
-        $this->addReference('admin-role', $adminRole);
-        $this->addReference('seller-role', $sellerRole);
+        $this->adminRole = $adminRole;
+        $this->sellerRole = $sellerRole;
     }
 
     private function addInstallmentPeriods(ObjectManager $manager)
@@ -50,21 +60,24 @@ class AppFixtures extends Fixture
 
     private function addUsers(ObjectManager $manager)
     {
-        $adminUser = (new UserEntity())
-            ->setName('Fulano Rodrigues')
-            ->setEmail('admin@exemplo.com')
-            ->setPassword('admin123')
-            ->setPhone('31 998001111')
-            ->setRole($this->getReference('admin-role'));
+        $encoder = $this->container->get('security.password_encoder');
 
-        $sellerUser = (new UserEntity())
-            ->setName('Herculano Souza')
-            ->setEmail('herculano@exemplo.com')
-            ->setPassword('admin123')
-            ->setPhone('31 998011111')
-            ->setRole($this->getReference('seller-role'));
+        $adminUser = new UserEntity();
+        $adminUser->setName('Fulano Rodrigues');
+        $adminUser->setEmail('herculano@exemplo.com');
+        $adminUser->setEmail('admin@exemplo.com');
+        $adminUser->setPassword($encoder->encodePassword($adminUser, 'admin'));
+        $adminUser->setPhone('31 998001111');
+        $adminUser->setRole($this->adminRole);
 
-        $this->addReference('seller-user', $sellerUser);
+        $sellerUser = new UserEntity();
+        $sellerUser->setName('Herculano Souza');
+        $sellerUser->setEmail('vendedor@exemplo.com');
+        $sellerUser->setPassword($encoder->encodePassword($sellerUser, 'admin'));
+        $sellerUser->setPhone('31 998011111');
+        $sellerUser->setRole($this->sellerRole);
+
+        $this->sellerUser = $sellerUser;
 
         $manager->persist($adminUser);
         $manager->persist($sellerUser);
@@ -77,7 +90,7 @@ class AppFixtures extends Fixture
             ->setDocumentNumber('12299933377')
             ->setEmail('marcelo@exemplo.com')
             ->setPhone('31 998000000')
-            ->setUser($this->getReference('seller-user'));
+            ->setUser($this->sellerUser);
 
         $manager->persist($user);
     }
@@ -96,5 +109,10 @@ class AppFixtures extends Fixture
         $manager->persist($notPaid);
         $manager->persist($tooLate);
         $manager->persist($paid);
+    }
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
     }
 }

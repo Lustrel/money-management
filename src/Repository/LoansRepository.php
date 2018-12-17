@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Loan;
+use App\Entity\Loan as LoanEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -14,37 +14,38 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class LoansRepository extends ServiceEntityRepository
 {
+    private  $filterMap = array(
+        'name' => array(
+            'join' => "l.customer",
+            'where' => "j.name = :name",
+        ),
+        'borrowed_value' => array(
+            'where' => "l.borrowed_value = :borrowed_value",
+        ),
+    );
+
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Loan::class);
+        parent::__construct($registry, LoanEntity::class);
     }
 
-    // /**
-    //  * @return Loan[] Returns an array of Loan objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function filterLoan($data)
     {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
+        if(array_key_exists("join", $this->filterMap[$data['filterType']]))
+        {
+            return $this->createQueryBuilder('l')
+            ->leftJoin($this->filterMap[$data['filterType']]['join'], 'j')
+            ->where($this->filterMap[$data['filterType']]['where'])
+            ->setParameter($data['filterType'], $data['filterText'])
             ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Loan
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
+            ->getResult();
+        }else
+        {
+            return $this->createQueryBuilder('l')
+            ->where($this->filterMap[$data['filterType']]['where'])
+            ->setParameter($data['filterType'], $data['filterText'])
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
+        }
     }
-    */
 }

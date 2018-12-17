@@ -17,7 +17,7 @@ class InstallmentsRepository extends ServiceEntityRepository
         parent::__construct($registry, InstallmentEntity::class);
     }
 
-    public function findBySellerUser(UserEntity $user)
+    /*public function findBySellerUser(UserEntity $user)
     {
         return $this->createQueryBuilder('i')
             ->innerJoin(InstallmentStatusEntity::class, 'ist', 'WITH', 'i.status = ist.id')
@@ -28,5 +28,5 @@ class InstallmentsRepository extends ServiceEntityRepository
             ->setParameter('user_id', $user->getId())
             ->getQuery()
             ->getResult();
-    }
+    }*/
 }
