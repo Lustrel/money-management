@@ -1,0 +1,27 @@
+{% use "bootstrap_4_layout.html.twig" %}
+
+{% extends "login/base-login.html.twig" %}
+
+{% block title %}
+    {{ parent() ~ 'Login' }}
+{% endblock %}
+
+{% block body %}
+    <div class="container" style="max-width: 400px">
+        <h1 class="text-center">Acessar sistema</h1>
+        {% if errors %}
+            <div class="alert alert-danger">
+                {{ errors.messageKey }}
+            </div>
+        {% endif %}
+        <form action="{{ path('login') }}" method="post">
+            <label for="username">Email:</label>
+            <input type="text" name="_username" id="username" required="true" value="{{ username }}"/>
+
+            <label for="password">Password:</label>
+            <input type="password" name="_password" id="password" required="true"/>
+
+            <button class="btn btn-info">Logar</button>
+        </form>
+    </div>
+{% endblock %}

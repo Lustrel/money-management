@@ -1,6 +1,10 @@
-index:
+login:
     path: /
-    controller: App\Controller\Authenticator::new
+    controller: App\Controller\Authenticator::login
+
+logout:
+    path: /logout
+    controller: App\Controller\Authenticator::logout
 
 #Routes for User
 users:

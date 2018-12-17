@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Customer as CustomerEntity;
 use App\Entity\User as UserEntity;
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -58,7 +56,7 @@ class Customer extends AbstractController
 
         }
 
-        return $this->render('customer/index.html.twig', array(
+        return $this->render('customer/customers.html.twig', array(
             'customers' => $customers, 'form' => $form->createView()
         ));
     }
@@ -69,8 +67,8 @@ class Customer extends AbstractController
         $customer = new CustomerEntity();
 
         $form = $this->createFormBuilder($customer)
-            ->add('name', TextType::class, ['label' => "Nome Completo"])
-            ->add('document_number', TextType::class, ['label' => "Número documento"])
+            ->add('name', TextType::class, ['label' => "Nome completo do cliente"])
+            ->add('document_number', TextType::class, ['label' => "Número do documento (CPF ou CNPJ)"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
             ->add('phone', TextType::class, ['label' => "Telefone"])
             ->add('user',EntityType::class, [
@@ -80,7 +78,7 @@ class Customer extends AbstractController
                     ->where('user.role = 3');
                 },
                 'choice_label' => 'name',
-                'label' => "Vendedor",
+                'label' => "Vendedor responsável",
                 'placeholder' => 'Selecione um vendedor',
                 'required' => true    
             ])
@@ -145,7 +143,7 @@ class Customer extends AbstractController
             return $this->redirectToRoute('customers');
         }
 
-        return $this->render('edit-customer.html.twig', array(
+        return $this->render('customer/edit-customer.html.twig', array(
             'form' => $form->createView(),
         ));
     }
