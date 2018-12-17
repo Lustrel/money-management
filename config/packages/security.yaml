@@ -41,6 +41,5 @@ security:
         - { path: ^/remove_loan, roles: ROLE_ADMIN }
         - { path: ^/loans, roles: IS_AUTHENTICATED_FULLY }
 
-
-
+        #Login
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

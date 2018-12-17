@@ -47,6 +47,7 @@ class User extends AbstractController
             ->getDoctrine()
             ->getRepository(UserEntity::class)
             ->findBy(array($data['filterType'] => $data['filterText']));
+            
             if($filterUsers == null){
                 $this->addFlash(
                     'notice',

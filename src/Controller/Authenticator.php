@@ -10,14 +10,12 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-
 class Authenticator extends AbstractController
 {
     public function login(Request $request, AuthenticationUtils $util)
     {
        $errors = $util->getLastAuthenticationError();
        $lastUsername = $util->getLastUsername();
-        
 
         return $this->render('login/login.html.twig', array(
             'errors' => $errors,

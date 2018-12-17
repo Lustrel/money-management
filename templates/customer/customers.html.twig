@@ -34,11 +34,13 @@
 
         {{ form_end(form) }}
 
-        <div class="row">
-            <div class="col">
-                <a class="btn btn-primary" href="/create_customer">Adicionar</a>
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-primary" href="/create_customer">Adicionar</a>
+                </div>
             </div>
-        </div>
+        {% endif %}
 
         <div class="row">
             <div class="col">

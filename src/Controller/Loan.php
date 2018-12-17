@@ -45,28 +45,10 @@ class Loan extends AbstractController
           
             $data = $form->getData();
 
-            $filterMap = array(
-                'name' => array(
-                    'join' => "l.customer",
-                    'where' => "j.name = :name",
-                ),
-                'borrowed_value' => array(
-                    'where' => "l.borrowed_value = :borrowed_value",
-                ),
-            );
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $qb = $entityManager->createQueryBuilder();
-            $qb->select('l');
-            $qb->from(LoanEntity::class, 'l');
-            if(array_key_exists("join", $filterMap[$data['filterType']]))
-                $qb->leftJoin($filterMap[$data['filterType']]['join'], 'j');
-            $qb->where($filterMap[$data['filterType']]['where']);
-            $qb->setParameter($data['filterType'], $data['filterText']);
-
-            $query = $qb->getQuery();
-            $filterLoans = $query->getResult();
-
+            $filterLoans = $this->getDoctrine()
+            ->getRepository(LoanEntity::class)
+            ->filterLoan($data);
+           
             if($filterLoans == null){
                 $this->addFlash(
                     'notice',
