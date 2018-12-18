@@ -1,15 +1,20 @@
 {% extends "base.html.twig" %}
+{% use "navbar.html.twig" %}
 
 {% block title %}
     {{ parent() ~ 'Empréstimos' }}
 {% endblock %}
 
 {% block body %}
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
+
     <div class="container">
         {% for flash_message in app.session.flashbag.get('notice') %}
             {{flash_message}}
         {% endfor %}
-        
+
         <div class="row">
             <div class="col">
                 <h1 class="text-center">Listagem de empréstimos</h1>
@@ -24,7 +29,7 @@
             </div>
             {{ form_widget(form.filterType) }}
         </div>
-      
+
        <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">{{ form.filterText.vars.label }}</span>

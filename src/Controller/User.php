@@ -46,22 +46,20 @@ class User extends AbstractController
                 ->getDoctrine()
                 ->getRepository(UserEntity::class)
                 ->findBy(array($data['filterType'] => $data['filterText']));
-            
-            if($filterUsers == null)
-            {
+
+            if($filterUsers == null) {
                 $this->addFlash(
                     'notice',
                     'Não há registros com esses dados!'
                 );
-            }else
-            {
+            } else {
                 $users = $filterUsers;
             }
         }
 
-        return $this->render('user/users.html.twig', array(
+        return $this->render('user/index.html.twig', array(
             'users' => $users,
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ));
     }
 
@@ -107,7 +105,7 @@ class User extends AbstractController
             return $this->redirectToRoute('users');
         }
 
-        return $this->render('user/create-user.html.twig', array(
+        return $this->render('user/create.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -145,7 +143,7 @@ class User extends AbstractController
             return $this->redirectToRoute('users');
         }
 
-        return $this->render('user/edit-user.html.twig', array(
+        return $this->render('user/edit.html.twig', array(
             'form' => $form->createView(),
         ));
     }

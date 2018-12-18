@@ -37,9 +37,9 @@ class Customer extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-          
+
             $data = $form->getData();
- 
+
             $filterCustomers = $this
                 ->getDoctrine()
                 ->getRepository(CustomerEntity::class)
@@ -56,7 +56,7 @@ class Customer extends AbstractController
 
         }
 
-        return $this->render('customer/customers.html.twig', array(
+        return $this->render('customer/index.html.twig', array(
             'customers' => $customers,
             'form' => $form->createView()
         ));
@@ -80,7 +80,7 @@ class Customer extends AbstractController
                 'choice_label' => 'name',
                 'label' => "Vendedor responsável",
                 'placeholder' => 'Selecione um vendedor',
-                'required' => true,  
+                'required' => true
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
@@ -88,9 +88,9 @@ class Customer extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-          
+
             $customer = $form->getData();
-            
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($customer);
             $entityManager->flush();
@@ -131,7 +131,7 @@ class Customer extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-          
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
@@ -143,7 +143,7 @@ class Customer extends AbstractController
             return $this->redirectToRoute('customers');
         }
 
-        return $this->render('customer/edit-customer.html.twig', array(
+        return $this->render('customer/edit.html.twig', array(
             'form' => $form->createView(),
         ));
     }

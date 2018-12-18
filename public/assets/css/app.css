@@ -1,0 +1,37 @@
+body {
+  /* Temporally, to fix issue with fixed footer */
+  padding-bottom: 60px;
+}
+
+.app-footer {
+  background: #28a745;
+  color: #f5f5f5;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+}
+
+.sge-header {
+  border-bottom: 3px solid #28a745;
+  padding: 20px;
+}
+
+.sge-navbar {
+  margin-bottom: 50px;
+}
+
+.sge-login {
+  margin-top: 70px;
+  border: 1px solid #c2bdc3;
+  max-width: 400px;
+  padding: 30px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.sge-login__title {
+  margin-bottom: 30px;
+}

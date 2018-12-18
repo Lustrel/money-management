@@ -26,7 +26,7 @@ class Loan extends AbstractController
             ->getDoctrine()
             ->getRepository(LoanEntity::class)
             ->findAll();
-        
+
         $form = $this->createFormBuilder()
             ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
             ->add('filterType', ChoiceType::class, array(
@@ -47,7 +47,7 @@ class Loan extends AbstractController
             $filterLoans = $this->getDoctrine()
                 ->getRepository(LoanEntity::class)
                 ->filterLoan($data);
-           
+
             if($filterLoans == null){
                 $this->addFlash(
                     'notice',
@@ -58,7 +58,7 @@ class Loan extends AbstractController
             }
         }
 
-        return $this->render('loan/loans.html.twig', array(
+        return $this->render('loan/index.html.twig', array(
             'loans' => $loans,
             'form' => $form->createView()
         ));
@@ -124,7 +124,7 @@ class Loan extends AbstractController
             $entityManager->persist($loan);
 
             for($i = 0; $i < $totalInstallments; $i++)
-            { 
+            {
                 $installment = (new InstallmentEntity())
                 ->setValue($calcInstallmentValues)
                 ->setStatus($this->getDoctrine()->getRepository(InstallmentStatusEntity::class)->findOneBy(array('id' => 1)))
@@ -132,8 +132,8 @@ class Loan extends AbstractController
                 ->setDueDate($firstInstallmentDate);
 
                 $entityManager->persist($installment);
-                $entityManager->flush(); 
-                $firstInstallmentDate = $firstInstallmentDate->modify($installmentPeriod);             
+                $entityManager->flush();
+                $firstInstallmentDate = $firstInstallmentDate->modify($installmentPeriod);
             }
 
             $this->addFlash(
@@ -142,10 +142,9 @@ class Loan extends AbstractController
             );
 
             return $this->redirectToRoute('loans');
-
         }
 
-        return $this->render('loan/create-loan.html.twig', array(
+        return $this->render('loan/create.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -193,7 +192,7 @@ class Loan extends AbstractController
             return $this->redirectToRoute('loans');
         }
 
-        return $this->render('loan/edit-loan.html.twig', array(
+        return $this->render('loan/edit.html.twig', array(
             'form' => $form->createView(),
         ));
     }

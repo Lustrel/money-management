@@ -1,12 +1,15 @@
-{% use "bootstrap_4_layout.html.twig" %}
-
 {% extends "base.html.twig" %}
+{% use "navbar.html.twig" %}
 
 {% block title %}
     {{ parent() ~ 'Usuários' }}
 {% endblock %}
 
 {% block body %}
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
+
     <div class="container">
         {% for flash_message in app.session.flashbag.get('notice') %}
             {{flash_message}}
@@ -25,7 +28,7 @@
             </div>
             {{ form_widget(form.filterType) }}
         </div>
-      
+
        <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">{{ form.filterText.vars.label }}</span>
