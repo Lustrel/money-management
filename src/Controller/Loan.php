@@ -108,7 +108,7 @@ class Loan extends AbstractController
             $entityManager->persist($loan);
 
             for($i = 0; $i < $totalInstallments; $i++)
-            { 
+            {
                 $installment = (new InstallmentEntity())
                 ->setValue($calcInstallmentValues)
                 ->setStatus($this->getDoctrine()->getRepository(InstallmentStatusEntity::class)->findOneBy(array('id' => 1)))
@@ -116,12 +116,12 @@ class Loan extends AbstractController
                 ->setDueDate($firstInstallmentDate);
 
                 $entityManager->persist($installment);
-                $entityManager->flush(); 
-                $firstInstallmentDate = $firstInstallmentDate->modify($installmentPeriod);             
+                $entityManager->flush();
+                $firstInstallmentDate = $firstInstallmentDate->modify($installmentPeriod);
             }
             $entityManager->flush();
 
-            return $this->redirectToRoute('/loans');
+            return $this->redirectToRoute('loans');
         }
 
         return $this->render('loan/create-loan.html.twig', array(
