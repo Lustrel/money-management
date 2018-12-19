@@ -28,26 +28,25 @@ class Loan extends AbstractController
             ->findAll();
         
         $form = $this->createFormBuilder()
-        ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
-        ->add('filterType', ChoiceType::class, array(
-            'label' => "Campo",
-            'choices' => array(
-                'Cliente' => 'name',
-                'Valor do empréstimo' => 'borrowed_value',
-            ),
-        ))
-        ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
-        ->getForm();
+            ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+            ->add('filterType', ChoiceType::class, array(
+                'label' => "Campo",
+                'choices' => array(
+                    'Cliente' => 'name',
+                    'Valor do empréstimo' => 'borrowed_value',
+                ),
+            ))
+            ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+            ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-          
             $data = $form->getData();
 
             $filterLoans = $this->getDoctrine()
-            ->getRepository(LoanEntity::class)
-            ->filterLoan($data);
+                ->getRepository(LoanEntity::class)
+                ->filterLoan($data);
            
             if($filterLoans == null){
                 $this->addFlash(
@@ -57,7 +56,6 @@ class Loan extends AbstractController
             }else{
                 $loans = $filterLoans;
             }
-
         }
 
         return $this->render('loan/loans.html.twig', array(
@@ -75,7 +73,7 @@ class Loan extends AbstractController
             ->add('customer', EntityType::class, array(
                 'label' => 'Cliente',
                 'class' => CustomerEntity::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ))
             ->add('borrowedValue', NumberType::class, ['label' => "Valor do empréstimo (R$)"])
             ->add('totalInstallments', NumberType::class, ['label' => "Número de parcelas"])
@@ -83,17 +81,17 @@ class Loan extends AbstractController
             ->add('discount', NumberType::class, ['label' => 'Desconto no valor total (%)'])
             ->add('comments', TextareaType::class, array(
                 'label' => 'Observações',
-                'required' => false
+                'required' => false,
             ))
             ->add('installments', DateType::class, array(
                 'widget' => 'single_text',
                 'label' => 'Data de vencimento da primeira parcela',
-                'mapped' => false
+                'mapped' => false,
             ))
             ->add('installmentPeriod', EntityType::class, array(
                 'label' => 'Período entre cada parcela',
                 'class' => InstallmentPeriodEntity::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ))
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
@@ -161,12 +159,11 @@ class Loan extends AbstractController
                 'id' => $id
             ));
 
-
         $form = $this->createFormBuilder($loan)
             ->add('customer', EntityType::class, array(
                 'label' => 'Cliente',
                 'class' => CustomerEntity::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ))
             ->add('borrowedValue', NumberType::class, ['label' => "Valor do empréstimo (R$)"])
             ->add('totalInstallments', NumberType::class, ['label' => "Qntd. de parcelas"])
@@ -175,7 +172,7 @@ class Loan extends AbstractController
             ->add('installmentPeriod', EntityType::class, array(
                 'label' => 'Intervalo de pagamento',
                 'class' => InstallmentPeriodEntity::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ))
             ->add('comments', TextareaType::class, ['label' => 'Observações'])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
@@ -185,7 +182,6 @@ class Loan extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-          
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 

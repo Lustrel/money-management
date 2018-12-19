@@ -22,17 +22,17 @@ class Customer extends AbstractController
             ->findAll();
 
         $form = $this->createFormBuilder()
-        ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
-        ->add('filterType', ChoiceType::class, array(
-            'label' => "Campo",
-            'choices' => array(
-                'Nome' => 'name',
-                'Número Documento' => 'document_number',
-                'E-mail' => 'email'
-            ),
-        ))
-        ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
-        ->getForm();
+            ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+            ->add('filterType', ChoiceType::class, array(
+                'label' => "Campo",
+                'choices' => array(
+                    'Nome' => 'name',
+                    'Número Documento' => 'document_number',
+                    'E-mail' => 'email',
+                ),
+            ))
+            ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+            ->getForm();
 
         $form->handleRequest($request);
 
@@ -41,9 +41,9 @@ class Customer extends AbstractController
             $data = $form->getData();
  
             $filterCustomers = $this
-            ->getDoctrine()
-            ->getRepository(CustomerEntity::class)
-            ->findBy(array($data['filterType'] => $data['filterText']));
+                ->getDoctrine()
+                ->getRepository(CustomerEntity::class)
+                ->findBy(array($data['filterType'] => $data['filterText']));
 
             if($filterCustomers == null){
                 $this->addFlash(
@@ -57,13 +57,13 @@ class Customer extends AbstractController
         }
 
         return $this->render('customer/customers.html.twig', array(
-            'customers' => $customers, 'form' => $form->createView()
+            'customers' => $customers,
+            'form' => $form->createView()
         ));
     }
 
     public function new(Request $request)
     {
-
         $customer = new CustomerEntity();
 
         $form = $this->createFormBuilder($customer)
@@ -80,7 +80,7 @@ class Customer extends AbstractController
                 'choice_label' => 'name',
                 'label' => "Vendedor responsável",
                 'placeholder' => 'Selecione um vendedor',
-                'required' => true    
+                'required' => true,  
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
@@ -123,7 +123,7 @@ class Customer extends AbstractController
             ->add('user',EntityType::class, [
                 'class' => UserEntity::class,
                 'choice_label' => 'name',
-                'label' => "Vendedor"
+                'label' => "Vendedor",
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
@@ -148,7 +148,7 @@ class Customer extends AbstractController
         ));
     }
 
-    public function remove(Request $resquest, $id)
+    public function remove(Request $request, $id)
     {
         $customer = $this
             ->getDoctrine()

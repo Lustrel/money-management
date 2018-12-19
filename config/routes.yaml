@@ -56,3 +56,14 @@ edit_loan:
 remove_loan:
     path: /remove_loan/{id}
     controller: App\Controller\Loan::remove
+
+#Routes for Installments
+installments:
+    path: /installments
+    controller: App\Controller\Installment::index
+
+pay_installment:
+    path: /pay_installment/{id}
+    controller: App\Controller\Installment::pay
+
+    
