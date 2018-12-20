@@ -12,13 +12,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class Installment extends Controller
 {
     public function index(Request $request)
-    {    
+    {
         $installments = $this
             ->getDoctrine()
             ->getRepository(InstallmentEntity::class)
             ->findAll();
 
-        return $this->render('installment/installments.html.twig', array(
+        return $this->render('installment/index.html.twig', array(
             'installments' => $installments,
         ));
     }
