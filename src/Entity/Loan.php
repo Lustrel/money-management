@@ -221,4 +221,16 @@ class Loan
         $this->installments = $installments;
         return $this;
     }
+
+     /**
+     * @return int The installment's original value
+     */
+    public function getInstallmentsValue()
+    {
+        $borrowedValue = $this->getBorrowedValue();
+        $installments = $this->getTotalInstallments();
+        $fee = $this->getMonthlyFee();
+
+        return ($borrowedValue / $installments) * (1 + ($fee / 100));
+    }
 }
