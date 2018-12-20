@@ -28,7 +28,7 @@ class Loan extends AbstractController
             ->findAll();
 
         $form = $this->createFormBuilder()
-            ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+            ->add('filterText', TextType::class, ['label' => 'Valor'])
             ->add('filterType', ChoiceType::class, array(
                 'label' => "Campo",
                 'choices' => array(
@@ -36,7 +36,7 @@ class Loan extends AbstractController
                     'Valor do empréstimo' => 'borrowed_value',
                 ),
             ))
-            ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+            ->add('submit', SubmitType::class, ['label' => 'Filtrar'])
             ->getForm();
 
         $form->handleRequest($request);
@@ -60,7 +60,7 @@ class Loan extends AbstractController
 
         return $this->render('loan/index.html.twig', array(
             'loans' => $loans,
-            'form' => $form->createView()
+            'filter_form' => $form->createView()
         ));
     }
 

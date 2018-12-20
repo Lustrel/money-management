@@ -35,3 +35,9 @@ body {
 .sge-login__title {
   margin-bottom: 30px;
 }
+
+.sge-filter {
+  border-radius: 5px;
+  background-color: #f5f6f5;
+  padding: 20px;
+}

@@ -34,7 +34,7 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", columnDefinition="CHAR(12)")
+     * @ORM\Column(type="string", length=255)
      */
     private $phone;
 
@@ -167,7 +167,7 @@ class User implements UserInterface
 
 
     /**
-     * UserInterface methods 
+     * UserInterface methods
      */
 
     /**

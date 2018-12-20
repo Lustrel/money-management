@@ -26,7 +26,7 @@ class User extends AbstractController
             ->findAll();
 
         $form = $this->createFormBuilder()
-            ->add('filterText', TextType::class, ['label' => 'Filtrar por'])
+            ->add('filterText', TextType::class, ['label' => 'Valor'])
             ->add('filterType', ChoiceType::class, array(
                 'label' => "Campo",
                 'choices' => array(
@@ -34,7 +34,7 @@ class User extends AbstractController
                     'E-mail' => 'email',
                 ),
             ))
-            ->add('filter', SubmitType::class, ['label' => 'Filtrar'])
+            ->add('submit', SubmitType::class, ['label' => 'Filtrar'])
             ->getForm();
 
         $form->handleRequest($request);
@@ -59,7 +59,7 @@ class User extends AbstractController
 
         return $this->render('user/index.html.twig', array(
             'users' => $users,
-            'form' => $form->createView()
+            'filter_form' => $form->createView()
         ));
     }
 
