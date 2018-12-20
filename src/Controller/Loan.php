@@ -33,7 +33,7 @@ class Loan extends AbstractController
                 'label' => "Campo",
                 'choices' => array(
                     'Cliente' => 'name',
-                    'Valor do empréstimo' => 'borrowed_value',
+                    'Valor do produto' => 'borrowed_value',
                 ),
             ))
             ->add('submit', SubmitType::class, ['label' => 'Filtrar'])
@@ -75,7 +75,7 @@ class Loan extends AbstractController
                 'class' => CustomerEntity::class,
                 'choice_label' => 'name',
             ))
-            ->add('borrowedValue', NumberType::class, ['label' => "Valor do empréstimo (R$)"])
+            ->add('borrowedValue', NumberType::class, ['label' => "Valor do produto (R$)"])
             ->add('totalInstallments', NumberType::class, ['label' => "Número de parcelas"])
             ->add('monthlyFee', NumberType::class, ['label' => 'Taxa de juros total (%)'])
             ->add('discount', NumberType::class, ['label' => 'Desconto no valor total (%)'])
@@ -138,7 +138,7 @@ class Loan extends AbstractController
 
             $this->addFlash(
                 'notice',
-                'Empréstimo cadastrado com sucesso!'
+                'Produto cadastrado com sucesso!'
             );
 
             return $this->redirectToRoute('loans');
@@ -164,7 +164,7 @@ class Loan extends AbstractController
                 'class' => CustomerEntity::class,
                 'choice_label' => 'name',
             ))
-            ->add('borrowedValue', NumberType::class, ['label' => "Valor do empréstimo (R$)"])
+            ->add('borrowedValue', NumberType::class, ['label' => "Valor do produto (R$)"])
             ->add('totalInstallments', NumberType::class, ['label' => "Qntd. de parcelas"])
             ->add('monthlyFee', NumberType::class, ['label' => 'Taxa de juros mensal (%)'])
             ->add('discount', NumberType::class, ['label' => 'Desconto (%)'])
@@ -186,7 +186,7 @@ class Loan extends AbstractController
 
             $this->addFlash(
                 'notice',
-                'Dados do empréstimo foram alterados com sucesso!'
+                'Dados do produto foram alterados com sucesso!'
             );
 
             return $this->redirectToRoute('loans');
@@ -210,7 +210,7 @@ class Loan extends AbstractController
 
         $this->addFlash(
             'notice',
-            'Empréstimo removido com sucesso!'
+            'Produto removido com sucesso!'
         );
 
         return $this->redirectToRoute('loans');
