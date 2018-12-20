@@ -1,48 +1,51 @@
-{% use "bootstrap_4_layout.html.twig" %}
-
 {% extends "base.html.twig" %}
+{% use "navbar.html.twig" %}
+{% form_theme filter_form 'theme/filter.html.twig' %}
 
 {% block title %}
     {{ parent() ~ 'Usuários' }}
 {% endblock %}
 
 {% block body %}
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
+
     <div class="container">
         {% for flash_message in app.session.flashbag.get('notice') %}
             {{flash_message}}
         {% endfor %}
-        <div class="row">
+
+        <div class="row mb-4">
+            <div class="col">
+                <div class="sge-filter">
+                    {{ form_start(filter_form) }}
+
+                    <div class="row">
+                        {{ form_widget(filter_form.filterType) }}
+                        {{ form_widget(filter_form.filterText) }}
+                        {{ form_widget(filter_form.submit) }}
+                    </div>
+
+                    {{ form_end(filter_form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
             <div class="col">
                 <h1 class="text-center">Listagem de usuários</h1>
             </div>
         </div>
 
-        {{ form_start(form) }}
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">{{ form.filterType.vars.label }}</span>
-            </div>
-            {{ form_widget(form.filterType) }}
-        </div>
-      
-       <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">{{ form.filterText.vars.label }}</span>
-            </div>
-            {{ form_widget(form.filterText) }}
-        </div>
-
-        {{ form_end(form) }}
-
-        <div class="row">
+        <div class="row mb-3">
             <div class="col">
                 <a class="btn btn-primary" href="/create_user">Adicionar</a>
             </div>
         </div>
 
         <div class="row">
-            <div class="col">
+            <div class="col-sm">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>

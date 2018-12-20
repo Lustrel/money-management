@@ -1,27 +1,32 @@
-{% use "bootstrap_4_layout.html.twig" %}
-
-{% extends "login/base-login.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block title %}
-    {{ parent() ~ 'Login' }}
+    {{ parent() ~ 'Entrar' }}
 {% endblock %}
 
 {% block body %}
-    <div class="container" style="max-width: 400px">
-        <h1 class="text-center">Acessar sistema</h1>
+    <div class="sge-login container">
+        <h1 class="sge-login__title text-center">Acessar sistema</h1>
+
+        <!-- Login error messages -->
         {% if errors %}
             <div class="alert alert-danger">
                 {{ errors.messageKey }}
             </div>
         {% endif %}
+
         <form action="{{ path('login') }}" method="post">
-            <label for="username">Email:</label>
-            <input type="text" name="_username" id="username" required="true" value="{{ username }}"/>
+            <div class="form-group">
+                <label for="username">Email:</label>
+                <input class="form-control" type="email" name="_username" id="username" required="true" value={{ username }}>
+            </div>
 
-            <label for="password">Password:</label>
-            <input type="password" name="_password" id="password" required="true"/>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input class="form-control" type="password" name="_password" id="password" required="true">
+            </div>
 
-            <button class="btn btn-info">Logar</button>
+            <button class="btn btn-success btn-block">Entrar</button>
         </form>
     </div>
 {% endblock %}

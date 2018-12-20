@@ -1,10 +1,15 @@
 {% extends "base.html.twig" %}
+{% use "navbar.html.twig" %}
 
 {% block title %}
     {{ parent() ~ 'Editar empréstimo' }}
 {% endblock %}
 
 {% block body %}
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
+
     <div class="container">
         <h1 class="text-center">Editar empréstimo</h1>
 
