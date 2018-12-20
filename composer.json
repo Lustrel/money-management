@@ -85,6 +85,12 @@
         ],
         "sge:database:populate": [
             "php bin/console doctrine:fixtures:load"
+        ],
+        "sge:database:reinitialize": [
+            "php bin/console doctrine:database:drop --force",
+            "php bin/composer sge:database:create",
+            "php bin/composer sge:database:migrate",
+            "php bin/composer sge:database:populate"
         ]
     },
     "conflict": {
