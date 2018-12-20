@@ -50,18 +50,19 @@
             <div class="col">
                 <table class="table table-bordered table-striped">
                     <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Cliente</th>
-                        <th scope="col">Periodo de pagamento</th>
-                        <th scope="col">Valor</th>
-                        <th scope="col">Qtd. parcelas</th>
-                        <th scope="col">Juros</th>
-                        <th scope="col">Desconto</th>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <th scope="col">Ações</th>
-                        {% endif %}
-                    </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Período</th>
+                            <th scope="col">Produto</th>
+                            <th scope="col">Juros</th>
+                            <th scope="col">Desconto</th>
+                            <th scope="col">Qtd. Parcelas</th>
+                            <th scope="col">Valor Parcela</th>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <th scope="col">Ações</th>
+                            {% endif %}
+                        </tr>
                     </thead>
                     <tbody>
                     {% for loan in loans %}
@@ -70,9 +71,10 @@
                             <td>{{ loan.customer.name }}</td>
                             <td>{{ loan.installmentperiod.name }}</td>
                             <td>{{ 'R$ ' ~ loan.borrowedvalue }}</td>
-                            <td>{{ loan.totalinstallments }}</td>
                             <td>{{ loan.monthlyfee ~ '%' }}</td>
                             <td>{{ loan.discount ~ '%' }}</td>
+                            <td>{{ loan.totalinstallments }}</td>
+                            <td>{{ 'R$ ' ~ loan.installmentsValue }}</td>
                             {% if is_granted('ROLE_ADMIN') %}
                                 <td>
                                     <a class="btn btn-secondary btn-sm" href="/edit_loan/{{ loan.id }}">Editar</a>
