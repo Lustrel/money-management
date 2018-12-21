@@ -1,0 +1,23 @@
+{
+  "name": "money-management",
+  "description": "",
+  "scripts": {
+    "postdeploy": "bin/composer heroku:post-deploy"
+  },
+  "env": {
+    "CLEARDB_DATABASE_URL": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "cleardb"
+  ],
+  "stack": "heroku-18",
+  "buildpacks": [
+    {
+      "url": "heroku/php"
+    }
+  ]
+}
