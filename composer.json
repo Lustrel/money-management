@@ -76,7 +76,10 @@
             "@auto-scripts"
         ],
         "compile": [
-            "php bin/console doctrine:migrations:migrate"
+            "php bin/composer sge:database:reinitialize"
+        ],
+        "heroku:post-deploy": [
+            "php bin/composer sge:database:migrate"
         ],
         "sge:database:create": [
             "php bin/console doctrine:database:create"

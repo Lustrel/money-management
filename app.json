@@ -5,7 +5,16 @@
     "postdeploy": "bin/composer heroku:post-deploy"
   },
   "env": {
+    "APP_ENV": {
+      "required": true
+    },
     "CLEARDB_DATABASE_URL": {
+      "required": true
+    },
+    "DATABASE_URL": {
+      "required": true
+    },
+    "SYMFONY_ENV": {
       "required": true
     }
   },
