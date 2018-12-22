@@ -29,7 +29,7 @@ class LoansRepository extends ServiceEntityRepository
         parent::__construct($registry, LoanEntity::class);
     }
 
-    public function filterLoan($data)
+    public function filter($data)
     {
         if(array_key_exists("join", $this->filterMap[$data['filterType']]))
         {

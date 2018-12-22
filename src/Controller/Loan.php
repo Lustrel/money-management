@@ -6,6 +6,8 @@ use App\Entity\InstallmentPeriod as InstallmentPeriodEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\Loan as LoanEntity;
 use App\Entity\Installment as InstallmentEntity;
+use App\Repository\LoansRepository as LoanRepository;
+use App\Service\Loan as LoanService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,15 +19,27 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityRepository;
 
-
 class Loan extends AbstractController
 {
+    /**
+     * @var LoanService $loanService
+     */
+    private $loanService;
+
+    /**
+     * Construct.
+     */
+    public function __construct(LoanService $loanService)
+    {
+        $this->loanService = $loanService;
+    }
+
+    /**
+     *
+     */
     public function index(Request $request)
     {
-        $loans = $this
-            ->getDoctrine()
-            ->getRepository(LoanEntity::class)
-            ->findAll();
+        $loans = $this->loanService->findAll();
 
         $form = $this->createFormBuilder()
             ->add('filterText', TextType::class, ['label' => 'Valor'])
@@ -42,20 +56,7 @@ class Loan extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $filterLoans = $this->getDoctrine()
-                ->getRepository(LoanEntity::class)
-                ->filterLoan($data);
-
-            if($filterLoans == null){
-                $this->addFlash(
-                    'notice',
-                    'Não há registros com esses dados!'
-                );
-            }else{
-                $loans = $filterLoans;
-            }
+            $this->handleFilterFormSubmission($form);
         }
 
         return $this->render('loan/index.html.twig', array(
@@ -64,10 +65,25 @@ class Loan extends AbstractController
         ));
     }
 
+    /**
+     *
+     */
+    private function handleFilterFormSubmission($form)
+    {
+        $data = $form->getData();
+        $loans = $this->loanService->filter($data);
+
+        return ($loans == null) ? array() : $loans;
+    }
+
+    /**
+     *
+     */
     public function new(Request $request)
     {
         $loan = new LoanEntity();
         $loan->setMonthlyFee(20);
+        $loan->setDiscount(0);
 
         $form = $this->createFormBuilder($loan)
             ->add('customer', EntityType::class, array(
@@ -99,49 +115,7 @@ class Loan extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $loan = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
-
-            $borrowedValue = $loan->getBorrowedValue();
-            $monthlyFee = $loan->getMonthlyFee();
-            $discount = $loan->getDiscount();
-            $totalInstallments = $loan->getTotalInstallments();
-            $firstInstallmentDate = $form->get('installments')->getData();
-
-            $calcMonthlyFee = ($monthlyFee * $borrowedValue) / 100;
-            $calcDiscount = ($discount * $borrowedValue) / 100;
-            $calcBorrowedValue = ($borrowedValue + $calcMonthlyFee) - $calcDiscount;
-            $calcInstallmentValues = $calcBorrowedValue / $totalInstallments;
-
-            $periodMap = array(
-                '1' => '+1 day',
-                '2' => '+7 day',
-                '3' => '+15 day',
-                '4' => '+1 month',
-            );
-            $installmentPeriod = $periodMap[$loan->getInstallmentPeriod()->getId()];
-
-            $entityManager->persist($loan);
-
-            for($i = 0; $i < $totalInstallments; $i++)
-            {
-                $installment = (new InstallmentEntity())
-                ->setValue($calcInstallmentValues)
-                ->setStatus($this->getDoctrine()->getRepository(InstallmentStatusEntity::class)->findOneBy(array('id' => 1)))
-                ->setLoan($loan)
-                ->setDueDate($firstInstallmentDate);
-
-                $entityManager->persist($installment);
-                $entityManager->flush();
-                $firstInstallmentDate = $firstInstallmentDate->modify($installmentPeriod);
-            }
-
-            $this->addFlash(
-                'notice',
-                'Produto cadastrado com sucesso!'
-            );
-
-            return $this->redirectToRoute('loans');
+            return $this->handleCreationFormSubmission($form);
         }
 
         return $this->render('loan/create.html.twig', array(
@@ -149,14 +123,30 @@ class Loan extends AbstractController
         ));
     }
 
+    /**
+     *
+     */
+    private function handleCreationFormSubmission($form)
+    {
+        $loan = $form->getData();
+        $paymentDate = $form->get('installments')->getData();
+
+        $this->loanService->create($loan, $paymentDate);
+
+        $this->addFlash(
+            'success',
+            'Produto cadastrado com sucesso!'
+        );
+
+        return $this->redirectToRoute('loans');
+    }
+
+    /**
+     *
+     */
     public function edit(Request $request, $id)
     {
-        $loan = $this
-            ->getDoctrine()
-            ->getRepository(LoanEntity::class)
-            ->findOneBy(array(
-                'id' => $id
-            ));
+        $loan = $this->loanService->findById($id);
 
         $form = $this->createFormBuilder($loan)
             ->add('customer', EntityType::class, array(
@@ -177,19 +167,10 @@ class Loan extends AbstractController
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
 
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->flush();
-
-            $this->addFlash(
-                'notice',
-                'Dados do produto foram alterados com sucesso!'
-            );
-
-            return $this->redirectToRoute('loans');
+            $this->handleEditFormSubmission($form);
         }
 
         return $this->render('loan/edit.html.twig', array(
@@ -197,19 +178,32 @@ class Loan extends AbstractController
         ));
     }
 
-    public function remove(Request $resquest, $id)
+    /**
+     *
+     */
+    private function handleEditFormSubmission($form)
     {
-        $loan = $this
-            ->getDoctrine()
-            ->getRepository(LoanEntity::class)
-            ->findOneBy(array('id' => $id));
+        $loan = $form->getData();
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($loan);
-        $entityManager->flush();
+        $this->loanService->update($loan);
 
         $this->addFlash(
             'notice',
+            'Dados do produto foram alterados com sucesso!'
+        );
+
+        return $this->redirectToRoute('loans');
+    }
+
+    /**
+     *
+     */
+    public function remove(Request $request, $id)
+    {
+        $this->loanService->remove($id);
+
+        $this->addFlash(
+            'success',
             'Produto removido com sucesso!'
         );
 
