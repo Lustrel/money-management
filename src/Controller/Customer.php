@@ -11,15 +11,31 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
+use App\Service\Customer as CustomerService;
+
 
 class Customer extends AbstractController
 {
+
+    /**
+     * @var CustomerService $customerService
+     */
+    private $customerService;
+
+    /**
+     * Construct.
+     */
+    public function __construct(CustomerService $customerService)
+    {
+        $this->customerService = $customerService;
+    }
+
+    /**
+     * 
+     */
     public function index(Request $request)
     {
-        $customers = $this
-            ->getDoctrine()
-            ->getRepository(CustomerEntity::class)
-            ->findAll();
+        $customers = $this->customerService->findAll();
 
         $form = $this->createFormBuilder()
             ->add('filterText', TextType::class, ['label' => 'Valor'])
@@ -37,23 +53,7 @@ class Customer extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $data = $form->getData();
-
-            $filterCustomers = $this
-                ->getDoctrine()
-                ->getRepository(CustomerEntity::class)
-                ->findBy(array($data['filterType'] => $data['filterText']));
-
-            if($filterCustomers == null){
-                $this->addFlash(
-                    'notice',
-                    'Não há registros com esses dados!'
-                );
-            }else{
-                $customers = $filterCustomers;
-            }
-
+            $customers = $this->handleFilterFormSubmission($form);
         }
 
         return $this->render('customer/index.html.twig', array(
@@ -62,6 +62,20 @@ class Customer extends AbstractController
         ));
     }
 
+    /**
+     *
+     */
+    private function handleFilterFormSubmission($form)
+    {
+        $data = $form->getData();
+        $customers = $this->customerService->filter($data);
+
+        return ($customers == null) ? array() : $customers;
+    }
+
+    /**
+     * 
+     */
     public function new(Request $request)
     {
         $customer = new CustomerEntity();
@@ -88,19 +102,7 @@ class Customer extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $customer = $form->getData();
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($customer);
-            $entityManager->flush();
-
-            $this->addFlash(
-                'notice',
-                'Cliente cadastrado com sucesso!'
-            );
-
-            return $this->redirectToRoute('customers');
+            return $this->handleCreationFormSubmission($form);
         }
 
         return $this->render('customer/create.html.twig', array(
@@ -108,12 +110,29 @@ class Customer extends AbstractController
         ));
     }
 
+    /**
+     *  
+     */
+    private function handleCreationFormSubmission($form)
+    {
+        $customer = $form->getData();
+
+        $this->customerService->create($customer);
+
+        $this->addFlash(
+            'notice',
+            'Cliente cadastrado com sucesso!'
+        );
+
+        return $this->redirectToRoute('customers');
+    }
+
+    /**
+     * 
+     */
     public function edit(Request $request, $id)
     {
-        $customer = $this
-            ->getDoctrine()
-            ->getRepository(CustomerEntity::class)
-            ->findOneBy(array('id' => $id));
+        $customer = $this->customerService->findById($id);
 
         $form = $this->createFormBuilder($customer)
             ->add('name', TextType::class, ['label' => "Nome Completo"])
@@ -131,16 +150,7 @@ class Customer extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->flush();
-
-            $this->addFlash(
-                'notice',
-                'Dados do cliente foram alterados com sucesso!'
-            );
-
-            return $this->redirectToRoute('customers');
+            return $this->handleEditFormSubmission($form);
         }
 
         return $this->render('customer/edit.html.twig', array(
@@ -148,16 +158,29 @@ class Customer extends AbstractController
         ));
     }
 
+    /**
+     *
+     */
+    private function handleEditFormSubmission()
+    {
+        $this->customerService->update();
+
+        $this->addFlash(
+            'notice',
+            'Dados do cliente foram alterados com sucesso!'
+        );
+
+        return $this->redirectToRoute('customers');
+    }
+
+    /**
+     * 
+     */
     public function remove(Request $request, $id)
     {
-        $customer = $this
-            ->getDoctrine()
-            ->getRepository(CustomerEntity::class)
-            ->findOneBy(array('id' => $id));
+        $customer = $this->customerService->findById($id);
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($customer);
-        $entityManager->flush();
+        $this->customerService->remove($id);
 
         $this->addFlash(
             'notice',
