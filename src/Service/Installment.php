@@ -83,6 +83,7 @@ class Installment
 
         $paidStatus = $this->installmentStatusRepository->find(3);
         $installment->setStatus($paidStatus);
+        $installment->setValue($paidValue);
 
         $this->entityManager->persist($installment);
         $this->entityManager->flush();
