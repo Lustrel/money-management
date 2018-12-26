@@ -12,9 +12,21 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class InstallmentsRepository extends ServiceEntityRepository
 {
+    /**
+     * Construct.
+     */
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, InstallmentEntity::class);
+    }
+
+    /**
+     *
+     */
+    public function findNext(InstallmentEntity $installment)
+    {
+        $id = $installment->getId();
+        return $this->findOneBy(array('id' => ($id + 1)));
     }
 
     /*public function findBySellerUser(UserEntity $user)
