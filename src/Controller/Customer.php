@@ -87,6 +87,7 @@ class Customer extends AbstractController
             ->add('phone', TextType::class, ['label' => "Telefone"])
             ->add('user',EntityType::class, [
                 'class' => UserEntity::class,
+                'attr' => ['class' => 'select2'],
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('user')
                     ->where('user.role = 3');
