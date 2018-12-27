@@ -30,7 +30,6 @@ class Installment extends Controller
      */
     public function index(Request $request)
     {
-
         $installments = $this->installmentService->findAll();
 
         return $this->render('installment/index.html.twig', array(
@@ -59,7 +58,7 @@ class Installment extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->handlePaymentFormSubmission($form, $installment);
+            return $this->handlePaymentFormSubmission($form, $installment);
         }
 
         return $this->render('installment/pay.html.twig', array(
@@ -73,11 +72,25 @@ class Installment extends Controller
     private function handlePaymentFormSubmission($form, $installment)
     {
         $paidValue = $form->get('payment')->getData();
+        $currentValue = $installment->getValue();
 
         $this->installmentService->pay($installment, $paidValue);
 
+        if ($this->installmentService->isPartialPayment($currentValue, $paidValue)) {
+            $next = $this->installmentService->findNext($installment);
+
+            if ($next) {
+                $this->installmentService->updateWithInterest($next, ($currentValue - $paidValue));
+            } else {
+                return $this->render('installment/new-loan-message.html.twig', array(
+                    'value' => ($currentValue - $paidValue),
+                    'customer' => $installment->getLoan()->getCustomer(),
+                ));
+            }
+        }
+
         $this->addFlash(
-            'notice',
+            'installment#paid_successfully',
             'Baixa de parcela efetuada com sucesso!'
         );
 

@@ -62,25 +62,18 @@ class Installment
     }
 
     /**
+     *
+     */
+    public function findNext(InstallmentEntity $installment)
+    {
+        return $this->installmentRepository->findNext($installment);
+    }
+
+    /**
      * Set the given installment as paid.
      */
     public function pay(InstallmentEntity $installment, $paidValue)
     {
-        $value = $installment->getValue();
-
-        // if it is a partial payment
-        if ($paidValue < $value) {
-            $nextInstallment = $this->installmentRepository->findNext($installment);
-
-            // if there is a next installment
-            if ($nextInstallment) {
-                $nextInstallment = $this->updateWithInterest($nextInstallment, ($value - $paidValue));
-                $this->entityManager->persist($nextInstallment);
-            }
-
-            $installment->setValue($value);
-        }
-
         $paidStatus = $this->installmentStatusRepository->find(3);
         $installment->setStatus($paidStatus);
         $installment->setValue($paidValue);
@@ -92,7 +85,15 @@ class Installment
     /**
      *
      */
-    private function updateWithInterest($installment, $remainingValue)
+    public function isPartialPayment($value, $paidValue)
+    {
+        return ($value > $paidValue);
+    }
+
+    /**
+     *
+     */
+    public function updateWithInterest($installment, $remainingValue)
     {
         // Remaining values suffer a 5% increase
         $fee = 5;
@@ -103,6 +104,7 @@ class Installment
 
         $installment->setValue($installment->getValue() + $valueWithInterest);
 
-        return $installment;
+        $this->entityManager->persist($installment);
+        $this->entityManager->flush();
     }
 }
