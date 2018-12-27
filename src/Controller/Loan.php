@@ -165,7 +165,7 @@ class Loan extends AbstractController
         $this->loanService->create($loan, $paymentDate);
 
         $this->addFlash(
-            'success',
+            'loan#success',
             'Produto cadastrado com sucesso!'
         );
 
@@ -219,7 +219,7 @@ class Loan extends AbstractController
         $this->loanService->update($loan);
 
         $this->addFlash(
-            'notice',
+            'loan#success',
             'Dados do produto foram alterados com sucesso!'
         );
 
@@ -234,7 +234,7 @@ class Loan extends AbstractController
         $this->loanService->remove($id);
 
         $this->addFlash(
-            'success',
+            'loan#success',
             'Produto removido com sucesso!'
         );
 

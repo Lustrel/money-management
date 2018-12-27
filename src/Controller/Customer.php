@@ -96,7 +96,7 @@ class Customer extends AbstractController
             $entityManager->flush();
 
             $this->addFlash(
-                'notice',
+                'customer#success',
                 'Cliente cadastrado com sucesso!'
             );
 
@@ -136,7 +136,7 @@ class Customer extends AbstractController
             $entityManager->flush();
 
             $this->addFlash(
-                'notice',
+                'customer#success',
                 'Dados do cliente foram alterados com sucesso!'
             );
 
