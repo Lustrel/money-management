@@ -183,6 +183,7 @@ class Loan extends AbstractController
 
         $form = $this->createFormBuilder($loan)
             ->add('customer', EntityType::class, array(
+                'attr' => ['class' => 'select2'],
                 'label' => 'Cliente',
                 'class' => CustomerEntity::class,
                 'choice_label' => 'name',
