@@ -109,6 +109,8 @@ class Loan extends AbstractController
             ->add('customer', EntityType::class, array(
                 'label' => 'Cliente',
                 'class' => CustomerEntity::class,
+                'attr' => ['class' => 'select2'],
+                'placeholder' => 'Selecione um cliente',
                 'choice_label' => 'name',
             ))
             ->add('borrowedValue', NumberType::class, ['label' => "Valor do produto (R$)"])
@@ -181,6 +183,7 @@ class Loan extends AbstractController
 
         $form = $this->createFormBuilder($loan)
             ->add('customer', EntityType::class, array(
+                'attr' => ['class' => 'select2'],
                 'label' => 'Cliente',
                 'class' => CustomerEntity::class,
                 'choice_label' => 'name',

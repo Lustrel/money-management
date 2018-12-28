@@ -78,7 +78,7 @@
                             {% if is_granted('ROLE_ADMIN') %}
                                 <td>
                                     <a class="btn btn-secondary btn-sm" href="/edit_customer/{{ customer.id }}">Editar</a>
-                                    <a class="btn btn-danger btn-sm" href="/edit_customer/{{ customer.id }}">Remover</a>
+                                    <a class="btn btn-danger btn-sm" href="/remove_customer/{{ customer.id }}">Remover</a>
                                 </td>
                             {% endif %}
                         </tr>

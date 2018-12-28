@@ -15,6 +15,8 @@
         crossorigin="anonymous">
 
     <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="stylesheet" href="/bundles/select2/css/select2.css">
+    <link rel="stylesheet" href="/bundles/select2/css/select2-bootstrap4.css">
 </head>
 <body>
     {% block header %}
@@ -38,5 +40,15 @@
     {% endblock footer %}
 
     {% block javascripts %}{% endblock %}
+    <script src="/bundles/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/bundles/select2/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function()  {
+            $(".select2").select2({
+                theme: 'bootstrap4',
+            });
+        })
+    </script>
 </body>
 </html>
