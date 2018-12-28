@@ -31,7 +31,7 @@ class Customer extends AbstractController
     }
 
     /**
-     * 
+     *
      */
     public function index(Request $request)
     {
@@ -74,7 +74,7 @@ class Customer extends AbstractController
     }
 
     /**
-     * 
+     *
      */
     public function new(Request $request)
     {
@@ -112,7 +112,7 @@ class Customer extends AbstractController
     }
 
     /**
-     *  
+     *
      */
     private function handleCreationFormSubmission($form)
     {
@@ -121,7 +121,7 @@ class Customer extends AbstractController
         $this->customerService->create($customer);
 
         $this->addFlash(
-            'notice',
+            'customer#success',
             'Cliente cadastrado com sucesso!'
         );
 
@@ -129,7 +129,7 @@ class Customer extends AbstractController
     }
 
     /**
-     * 
+     *
      */
     public function edit(Request $request, $id)
     {
@@ -167,7 +167,7 @@ class Customer extends AbstractController
         $this->customerService->update();
 
         $this->addFlash(
-            'notice',
+            'customer#success',
             'Dados do cliente foram alterados com sucesso!'
         );
 
@@ -175,7 +175,7 @@ class Customer extends AbstractController
     }
 
     /**
-     * 
+     *
      */
     public function remove(Request $request, $id)
     {

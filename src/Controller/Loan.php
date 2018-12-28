@@ -6,6 +6,7 @@ use App\Entity\InstallmentPeriod as InstallmentPeriodEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\Loan as LoanEntity;
 use App\Entity\Installment as InstallmentEntity;
+use App\Repository\CustomersRepository as CustomerRepository;
 use App\Repository\LoansRepository as LoanRepository;
 use App\Service\Loan as LoanService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -27,11 +28,20 @@ class Loan extends AbstractController
     private $loanService;
 
     /**
+     * @var CustomerRepository $customerRepository
+     */
+    private $customerRepository;
+
+    /**
      * Construct.
      */
-    public function __construct(LoanService $loanService)
+    public function __construct(
+        LoanService $loanService,
+        CustomerRepository $customerRepository
+    )
     {
         $this->loanService = $loanService;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -82,8 +92,18 @@ class Loan extends AbstractController
     public function new(Request $request)
     {
         $loan = new LoanEntity();
+
         $loan->setMonthlyFee(20);
         $loan->setDiscount(0);
+
+        if ($this->isComingFromPartialPayment($request)) {
+            $customerId = $request->query->get('customer');
+            $value = $request->query->get('value');
+            $customer = $this->customerRepository->find($customerId);
+
+            $loan->setBorrowedValue($value);
+            $loan->setCustomer($customer);
+        }
 
         $form = $this->createFormBuilder($loan)
             ->add('customer', EntityType::class, array(
@@ -128,6 +148,17 @@ class Loan extends AbstractController
     /**
      *
      */
+    private function isComingFromPartialPayment(Request $request)
+    {
+        return (
+            $request->query->get('customer') &&
+            $request->query->get('value')
+        );
+    }
+
+    /**
+     *
+     */
     private function handleCreationFormSubmission($form)
     {
         $loan = $form->getData();
@@ -136,7 +167,7 @@ class Loan extends AbstractController
         $this->loanService->create($loan, $paymentDate);
 
         $this->addFlash(
-            'success',
+            'loan#success',
             'Produto cadastrado com sucesso!'
         );
 
@@ -190,7 +221,7 @@ class Loan extends AbstractController
         $this->loanService->update($loan);
 
         $this->addFlash(
-            'notice',
+            'loan#success',
             'Dados do produto foram alterados com sucesso!'
         );
 
@@ -205,7 +236,7 @@ class Loan extends AbstractController
         $this->loanService->remove($id);
 
         $this->addFlash(
-            'success',
+            'loan#success',
             'Produto removido com sucesso!'
         );
 

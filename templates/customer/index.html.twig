@@ -13,8 +13,10 @@
 
     <div class="container">
         <!-- Flash messages -->
-        {% for flash_message in app.session.flashbag.get('notice') %}
-            {{flash_message}}
+        {% for flash_message in app.session.flashbag.get('customer#success') %}
+            <div class="alert alert-success" role="alert">
+                {{flash_message}}
+            </div>
         {% endfor %}
 
         <div class="row mb-4">
