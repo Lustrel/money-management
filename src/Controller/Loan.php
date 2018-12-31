@@ -11,7 +11,6 @@ use App\Repository\LoansRepository as LoanRepository;
 use App\Service\Loan as LoanService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -52,13 +51,13 @@ class Loan extends AbstractController
         $loans = $this->loanService->findAll();
 
         $form = $this->createFormBuilder()
-            ->add('filterText', TextType::class, ['label' => 'Valor'])
-            ->add('filterType', ChoiceType::class, array(
-                'label' => "Campo",
-                'choices' => array(
-                    'Cliente' => 'name',
-                    'Valor do produto' => 'borrowed_value',
-                ),
+            ->add('filterName', TextType::class, array(
+                'label' => 'Cliente',
+                'required' => false,
+            ))
+            ->add('filterBorrowedValue', TextType::class, array(
+                'label' => 'Valor da Parcela',
+                'required' => false,
             ))
             ->add('submit', SubmitType::class, ['label' => 'Filtrar'])
             ->getForm();
@@ -66,7 +65,7 @@ class Loan extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->handleFilterFormSubmission($form);
+            $loans = $this->handleFilterFormSubmission($form);
         }
 
         return $this->render('loan/index.html.twig', array(

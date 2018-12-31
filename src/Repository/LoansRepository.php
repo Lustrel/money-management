@@ -14,16 +14,6 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class LoansRepository extends ServiceEntityRepository
 {
-    private  $filterMap = array(
-        'name' => array(
-            'join' => "l.customer",
-            'where' => "j.name = :name",
-        ),
-        'borrowed_value' => array(
-            'where' => "l.borrowed_value = :borrowed_value",
-        ),
-    );
-
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, LoanEntity::class);
@@ -31,21 +21,19 @@ class LoansRepository extends ServiceEntityRepository
 
     public function filter($data)
     {
-        if(array_key_exists("join", $this->filterMap[$data['filterType']]))
+        $qb = $this->createQueryBuilder('l');
+        if(!is_null($data['filterName']))
         {
-            return $this->createQueryBuilder('l')
-            ->leftJoin($this->filterMap[$data['filterType']]['join'], 'j')
-            ->where($this->filterMap[$data['filterType']]['where'])
-            ->setParameter($data['filterType'], $data['filterText'])
-            ->getQuery()
-            ->getResult();
-        }else
-        {
-            return $this->createQueryBuilder('l')
-            ->where($this->filterMap[$data['filterType']]['where'])
-            ->setParameter($data['filterType'], $data['filterText'])
-            ->getQuery()
-            ->getResult();
+            $qb->leftJoin('l.customer', 'c')
+            ->where('c.name = :name')
+            ->setParameter('name', $data['filterName']);
         }
+        if(!is_null($data['filterBorrowedValue']))
+        {
+            $qb->andWhere('l.borrowed_value = :borrowed_value')
+            ->setParameter('borrowed_value', $data['filterBorrowedValue']);
+        }
+        
+        return $qb->getQuery()->getResult();
     }
 }
