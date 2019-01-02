@@ -10,10 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class InstallmentPeriod
 {
+    static $ID_DAILY = 'daily';
+    static $ID_WEEKLY = 'weekly';
+    static $ID_FORTNIGHTLY = 'fortnightly';
+    static $ID_MONTHLY = 'monthly';
+
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
     private $id;
 
@@ -26,6 +30,15 @@ class InstallmentPeriod
      * @ORM\OneToMany(targetEntity="App\Entity\Loan", mappedBy="installment_period")
      */
     private $loans;
+
+    /**
+     * Construct.
+     * @param int $id
+     */
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return mixed

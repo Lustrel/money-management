@@ -10,10 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Role
 {
+    static $ID_ADMIN = 'admin';
+    static $ID_MANAGER = 'manager';
+    static $ID_SELLER = 'seller';
+
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
     private $id;
 
@@ -27,44 +30,33 @@ class Role
      */
     private $users;
 
-    /**
-     * @return mixed
-     */
+
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
+
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     * @return Role
-     */
     public function setName($name)
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getUsers()
     {
         return $this->users;
     }
 
-    /**
-     * @param mixed $users
-     * @return Role
-     */
     public function setUsers($users)
     {
         $this->users = $users;

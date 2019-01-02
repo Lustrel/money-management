@@ -74,7 +74,7 @@ class Installment
      */
     public function pay(InstallmentEntity $installment, $paidValue)
     {
-        $paidStatus = $this->installmentStatusRepository->find(3);
+        $paidStatus = $this->installmentStatusRepository->getPaid();
         $installment->setStatus($paidStatus);
         $installment->setValue($paidValue);
 
