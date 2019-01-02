@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Installment as InstallmentEntity;
+use App\Entity\InstallmentPeriod as InstallmentPeriodEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\Loan as LoanEntity;
 use App\Repository\InstallmentStatusRepository;
@@ -31,9 +32,7 @@ class Loan
      */
     private $calculatorService;
 
-    /**
-     * Construct.
-     */
+
     public function __construct(
         EntityManager $entityManager,
         CalculatorService $calculatorService
@@ -45,33 +44,21 @@ class Loan
         $this->calculatorService = $calculatorService;
     }
 
-    /**
-     *
-     */
     public function findAll()
     {
         return $this->loanRepository->findAll();
     }
 
-    /**
-     *
-     */
     public function findById($id)
     {
         return $this->loanRepository->findOneBy(['id' => $id]);
     }
 
-    /**
-     *
-     */
     public function filter($data)
     {
         return $this->loanRepository->filter($data);
     }
 
-    /**
-     *
-     */
     public function create(LoanEntity $loan, $paymentDate)
     {
         $borrowed = $loan->getBorrowedValue();
@@ -90,10 +77,10 @@ class Loan
         $eachInstallmentPrice = ($priceAfterDiscount / $totalInstallments);
 
         $periods = array(
-            '1' => '+1 day',
-            '2' => '+7 day',
-            '3' => '+15 day',
-            '4' => '+1 month'
+            InstallmentPeriodEntity::$ID_DAILY => '+1 day',
+            InstallmentPeriodEntity::$ID_WEEKLY => '+7 day',
+            InstallmentPeriodEntity::$ID_FORTNIGHTLY => '+15 day',
+            InstallmentPeriodEntity::$ID_MONTHLY => '+1 month'
         );
 
         $this->entityManager->persist($loan);
@@ -110,7 +97,7 @@ class Loan
      */
     private function createInstallment($loan, $price, $paymentDate)
     {
-        $toBePaidStatus = $this->installmentStatusRepository->findOneBy(['id' => 1]);
+        $toBePaidStatus = $this->installmentStatusRepository->getToReceive();
 
         $installment = (new InstallmentEntity())
             ->setValue($price)
@@ -122,9 +109,6 @@ class Loan
         $this->entityManager->flush();
     }
 
-    /**
-     *
-     */
     public function remove($loanId)
     {
         $loan = $this->loanRepository->findOneBy(['id' => $loanId]);
