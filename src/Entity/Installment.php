@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\InstallmentStatus;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,80 +40,50 @@ class Installment
      */
     private $status;
 
-    /**
-     * @return mixed
-     */
+
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getDueDate()
     {
         return $this->due_date;
     }
 
-    /**
-     * @param mixed $due_date
-     * @return Installment
-     */
     public function setDueDate($due_date)
     {
         $this->due_date = $due_date;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue()
     {
         return $this->value;
     }
 
-    /**
-     * @param mixed $value
-     * @return Installment
-     */
     public function setValue($value)
     {
         $this->value = $value;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getLoan()
     {
         return $this->loan;
     }
 
-    /**
-     * @param mixed $loan
-     * @return Installment
-     */
     public function setLoan($loan)
     {
         $this->loan = $loan;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getStatus()
     {
         return $this->status;
     }
 
-    /**
-     * @param mixed $status
-     * @return Installment
-     */
     public function setStatus($status)
     {
         $this->status = $status;

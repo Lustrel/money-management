@@ -41,10 +41,23 @@
                                 <td>{{ installment.loan.customer.documentnumber }}</td>
                                 <td>{{ 'R$ ' ~ installment.value }}</td>
                                 <td>{{ installment.duedate | date('d/m/Y') }}</td>
-                                <td>{{ installment.status.name }}</span></td>
+                                <td>
+                                    {% if installment.status.isPaid %}
+                                        <span class="badge badge-pill badge-success">{{ installment.status.name }}</span>
+                                    {% endif %}
+                                    {% if installment.status.isToReceive %}
+                                        <span class="badge badge-pill badge-secondary">{{ installment.status.name }}</span>
+                                    {% endif %}
+                                    {% if installment.status.isInArrears %}
+                                        <span class="badge badge-pill badge-danger">{{ installment.status.name }}</span>
+                                    {% endif %}
+                                </td>
+
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <td>
-                                        <a class="btn btn-secondary btn-sm" href="/pay_installment/{{ installment.id }}">Dar baixa</a>
+                                        {% if not installment.status.isPaid %}
+                                            <a class="btn btn-secondary btn-sm" href="/pay_installment/{{ installment.id }}">Dar baixa</a>
+                                        {% endif %}
                                     </td>
                                 {% endif %}
                             </tr>
