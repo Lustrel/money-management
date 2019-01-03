@@ -15,7 +15,7 @@ class InstallmentStatus
 
     /**
      * @ORM\Id()
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=25)
      */
     private $id;
 
