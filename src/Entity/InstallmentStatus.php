@@ -29,56 +29,51 @@ class InstallmentStatus
      */
     private $installments;
 
-    /**
-     * Construct.
-     * @param int $id
-     */
+
     public function __construct($id)
     {
         $this->id = $id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     * @return InstallmentStatus
-     */
     public function setName($name)
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getInstallments()
     {
         return $this->installments;
     }
 
-    /**
-     * @param mixed $installments
-     * @return InstallmentStatus
-     */
     public function setInstallments($installments)
     {
         $this->installments = $installments;
         return $this;
+    }
+
+    public function isPaid()
+    {
+        return ($this->id == self::$ID_PAID);
+    }
+
+    public function isToReceive()
+    {
+        return ($this->id == self::$ID_TO_RECEIVE);
+    }
+
+    public function isInArrears()
+    {
+        return ($this->id == self::$ID_IN_ARREARS);
     }
 }
