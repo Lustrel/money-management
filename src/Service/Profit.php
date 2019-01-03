@@ -52,36 +52,41 @@ class Profit
         $this->loanRepository = $entityManager->getRepository(LoanEntity::class);
     }
 
-    /**
-     * 1. Pegar todos os Installments que possuem o status "Pago"
-     * 2. Subtrair, de cada uma, o valor referente ao empréstimo
-     * 3. Dividi-los por meses (jan., fev., etc.)
-     */
     public function findAll()
     {
         $installments = $this->installmentRepository->findAllPaid();
-        $profitPerMonth = array();
+        $installmentsPerMonth = array();
 
         foreach ($installments as $installment) {
             // $monthIndex: 1 through 12
             $monthIndex = date('n', $installment->getDueDate()->getTimestamp());
 
-            if (!isset($profitPerMonth[$monthIndex])) {
-                $profitPerMonth[$monthIndex] = 0;
+            if (!isset($installmentsPerMonth[$monthIndex])) {
+                $installmentsPerMonth[$monthIndex] = array();
             }
 
-            $profitPerMonth[$monthIndex] += $installment->getValue();
+            array_push($installmentsPerMonth[$monthIndex], $installment);
         }
 
-        $finalResult = array();
+        $formattedData = array();
 
-        foreach ($profitPerMonth as $monthIndex => $profit) {
-            array_push($finalResult, array(
+        foreach ($installmentsPerMonth as $monthIndex => $installments) {
+            array_push($formattedData, array(
                 'month' => $this->months[$monthIndex],
-                'profit' => $profit,
+                'year' => date('Y', $installments[0]->getDueDate()->getTimestamp()),
+                'profit' => $this->sumInstallments($installments),
             ));
         }
 
-        return $finalResult;
+        return $formattedData;
+    }
+
+    private function sumInstallments($installments)
+    {
+        $sum = 0;
+        foreach ($installments as $installment) {
+            $sum += $installment->getValue();
+        }
+        return $sum;
     }
 }
