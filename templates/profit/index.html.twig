@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+{% use "navbar.html.twig" %}
+
+{% block title %}
+    {{ parent() ~ 'Lucros' }}
+{% endblock %}
+
+{% block body %}
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
+
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="text-center">Financeiro</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Mês</th>
+                            <th scope="col">Receita Bruta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for profit in profits %}
+                            <tr>
+                                <td>{{ profit.month ~ ' / ' ~ profit.year }}</td>
+                                <td>{{ 'R$ ' ~ profit.profit }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
