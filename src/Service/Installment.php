@@ -107,4 +107,12 @@ class Installment
         $this->entityManager->persist($installment);
         $this->entityManager->flush();
     }
+
+    /**
+     * 
+     */
+    public function filter($data)
+    {
+        return $this->installmentRepository->findByNameValue($data);
+    }
 }

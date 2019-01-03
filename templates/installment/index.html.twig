@@ -1,5 +1,6 @@
 {% extends "base.html.twig" %}
 {% use "navbar.html.twig" %}
+{% form_theme filter_form 'theme/filter.html.twig' %}
 
 {% block title %}
     {{ parent() ~ 'Parcelas' }}
@@ -11,6 +12,22 @@
     {% endblock %}
 
     <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <div class="sge-filter">
+                    {{ form_start(filter_form) }}
+
+                    <div class="row">
+                        {{ form_widget(filter_form.filterName) }}
+                        {{ form_widget(filter_form.filterValue) }}
+                        {{ form_widget(filter_form.submit) }}
+                    </div>
+
+                    {{ form_end(filter_form) }}
+                </div>
+            </div>
+        </div>
+
         <div class="row mb-4">
             <div class="col">
                 <h1 class="text-center">Parcelas</h1>
