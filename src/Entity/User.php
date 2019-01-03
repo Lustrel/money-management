@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Role as RoleEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -49,122 +50,92 @@ class User implements UserInterface
      */
     private $customers;
 
-    /**
-     * @return mixed
-     */
+
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     * @return User
-     */
     public function setName($name)
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getEmail()
     {
         return $this->email;
     }
 
-    /**
-     * @param mixed $email
-     * @return User
-     */
     public function setEmail($email)
     {
         $this->email = $email;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getPassword()
     {
         return $this->password;
     }
 
-    /**
-     * @param mixed $password
-     * @return User
-     */
     public function setPassword($password)
     {
         $this->password = $password;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getPhone()
     {
         return $this->phone;
     }
 
-    /**
-     * @param mixed $phone
-     * @return User
-     */
     public function setPhone($phone)
     {
         $this->phone = $phone;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getRole()
     {
         return $this->role;
     }
 
-    /**
-     * @param mixed $role
-     * @return User
-     */
     public function setRole($role)
     {
         $this->role = $role;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getCustomers()
     {
         return $this->customers;
     }
 
-    /**
-     * @param mixed $customers
-     * @return User
-     */
     public function setCustomers($customers)
     {
         $this->customers = $customers;
         return $this;
     }
 
+    public function isAdministrator()
+    {
+        return ($this->role->getId() == RoleEntity::$ID_ADMIN);
+    }
+
+    public function isManager()
+    {
+        return ($this->role->getId() == RoleEntity::$ID_MANAGER);
+    }
+
+    public function isSeller()
+    {
+        return ($this->role->getId() == RoleEntity::$ID_SELLER);
+    }
 
     /**
      * UserInterface methods
@@ -183,15 +154,11 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        if($this->role->getId() == 1){
-            return [
-                'ROLE_ADMIN'
-            ];
-        }else{
-            return [
-                'ROLE_USER'
-            ];
+        if ($this->isAdministrator()) {
+            return ['ROLE_ADMIN'];
         }
+
+        return ['ROLE_USER'];
     }
 
     /**

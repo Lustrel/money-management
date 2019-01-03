@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Customer as CustomerEntity;
+use App\Entity\Role as RoleEntity;
 use App\Entity\User as UserEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,8 +90,10 @@ class Customer extends AbstractController
                 'class' => UserEntity::class,
                 'attr' => ['class' => 'select2'],
                 'query_builder' => function(EntityRepository $er){
-                    return $er->createQueryBuilder('user')
-                    ->where('user.role = 3');
+                    $sellerId = RoleEntity::$ID_SELLER;
+                    return $er
+                        ->createQueryBuilder('user')
+                        ->where("user.role = '{$sellerId}'");
                 },
                 'choice_label' => 'name',
                 'label' => "Vendedor responsável",
@@ -143,8 +146,16 @@ class Customer extends AbstractController
             ->add('user',EntityType::class, [
                 'class' => UserEntity::class,
                 'attr' => ['class' => 'select2'],
+                'query_builder' => function(EntityRepository $er){
+                    $sellerId = RoleEntity::$ID_SELLER;
+                    return $er
+                        ->createQueryBuilder('user')
+                        ->where("user.role = '{$sellerId}'");
+                },
                 'choice_label' => 'name',
-                'label' => "Vendedor",
+                'label' => "Vendedor responsável",
+                'placeholder' => 'Selecione um vendedor',
+                'required' => true
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();

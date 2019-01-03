@@ -9,10 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class InstallmentStatus
 {
+    static $ID_TO_RECEIVE = 'to_receive';
+    static $ID_IN_ARREARS = 'in_arrears';
+    static $ID_PAID = 'paid';
+
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=25)
      */
     private $id;
 
@@ -25,6 +28,15 @@ class InstallmentStatus
      * @ORM\OneToMany(targetEntity="App\Entity\Installment", mappedBy="status")
      */
     private $installments;
+
+    /**
+     * Construct.
+     * @param int $id
+     */
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return mixed
