@@ -24,6 +24,7 @@
                     {% endif %}
                 </ul>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a href="/profile" class="nav-link text-white">Perfil</a>
                     <a href="{{ logout_path() }}" class="nav-link text-white">Sair</a>
                 {% endif %}
             </div>

@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+{% use "navbar.html.twig" %}
+
+{% block title %}
+    {{ parent() ~ 'Perfil' }}
+{% endblock %}
+
+{% block body %}
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
+
+    <div class="container">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <h1 class="text-center">Perfil</h1>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

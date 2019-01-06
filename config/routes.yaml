@@ -70,3 +70,8 @@ profits:
     path: /profits
     controller: App\Controller\Profit::index
 
+#Routes for Profile
+profile:
+    path: /profile
+    controller: App\Controller\Profile::index
+
