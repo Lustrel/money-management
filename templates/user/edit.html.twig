@@ -17,8 +17,16 @@
         {{ form_widget(form) }}
         {{ form_end(form) }}
 
+        {% for flash_message in app.session.flashbag.get('user#error') %}
+            <div class="alert alert-danger" role="alert">
+                {{flash_message}}
+            </div>
+        {% endfor %}
+
         {{ form_start(form_password) }}
         {{ form_widget(form_password) }}
         {{ form_end(form_password) }}
+
     </div>
+     
 {% endblock %}

@@ -63,9 +63,8 @@ class User
     /**
      * 
      */
-    public function updatePassword(UserEntity $user, $password, $encoder)
+    public function updatePassword(UserEntity $user)
     {
-        $user->setPassword($encoder->encodePassword($user, $password));
         $this->userRepository->updatePasswordById($user);
     }
 

@@ -151,27 +151,33 @@ class User extends AbstractController
             ->add('save', SubmitType::class, ['label' => 'Editar'])
             ->getForm();
         
-        $formPassword = $this->createFormBuilder()
+        $formPassword = $this->createFormBuilder($user)
             ->add('password', RepeatedType::class, array(
                 'type' => PasswordType::class,
-                'invalid_message' => 'Os campos da senha devem corresponder.',
-                'options' => array('attr' => ['class' => 'password-field']),
                 'required' => true,
                 'first_options'  => ['label' => 'Senha'],
                 'second_options' => ['label' => 'Repetir senha'],
             ))
-            ->add('save', SubmitType::class, ['label' => 'Editar senha'])
+            ->add('save_password', SubmitType::class, ['label' => 'Editar senha'])
             ->getForm();
 
-        $form->handleRequest($request);
         $formPassword->handleRequest($request);
+        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            return $this->handleEditFormSubmission();
+        if ($formPassword->get('save_password')->isClicked() && $formPassword->isSubmitted()) {
+            if(!$formPassword->isValid())
+            {
+                $this->addFlash(
+                    'user#error',
+                    'Os campos da senha devem corresponder.'
+                );
+                return $this->redirectToRoute('edit_user', array('id' => $id));
+            }
+            return $this->handleEditPasswordFormSubmission($formPassword, $encoder);
         }
-
-        if ($formPassword->isSubmitted() && $formPassword->isValid()) {
-            return $this->handleEditPasswordFormSubmission($user, $formPassword, $encoder);
+        
+        if ($form->get('save')->isClicked() && $form->isSubmitted() && $form->isValid()) {
+            return $this->handleEditFormSubmission();
         }
 
         return $this->render('user/edit.html.twig', array(
@@ -198,11 +204,12 @@ class User extends AbstractController
     /**
      *
      */
-    private function handleEditPasswordFormSubmission($user, $form, $encoder)
+    private function handleEditPasswordFormSubmission($form, $encoder)
     {
-        $data = $form->getData();
+        $user = $form->getData();
+        $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
 
-        $this->userService->updatePassword($user, $data['password'], $encoder);
+        $this->userService->updatePassword($user);
 
         $this->addFlash(
             'user#success',
