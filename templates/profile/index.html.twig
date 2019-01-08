@@ -11,12 +11,10 @@
     {% endblock %}
 
     <div class="container">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+         {% for flash_message in app.session.flashbag.get('user#success') %}
+            <div class="alert alert-success" role="alert">
+                {{flash_message}}
+            </div>
         {% endfor %}
 
         <h1 class="text-center">Perfil</h1>

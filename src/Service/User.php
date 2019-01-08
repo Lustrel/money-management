@@ -13,9 +13,9 @@ class User
     private $entityManager;
 
     /**
-     * @var CustomerRepository $customerRepository
+     * @var UserRepository $userRepository
      */
-    private $customerRepository;
+    private $userRepository;
 
     /**
      * Construct.
@@ -27,12 +27,66 @@ class User
     }
 
     /**
+     *
+     */
+    public function findAll()
+    {
+        return $this->userRepository->findAll();
+    }
+
+    /**
+     *
+     */
+    public function findById($id)
+    {
+        return $this->userRepository->findOneBy(['id' => $id]);
+    }
+
+    /**
      * 
      */
-    public function update(UserEntity $user, $password, $encoder)
+    public function update()
     {
-        $user->setPassword($encoder->encodePassword($user, $password));
         $this->entityManager->flush();
     }
+
+    /**
+     * 
+     */
+    public function remove($userId)
+    {
+        $user = $this->userRepository->findOneBy(['id' => $userId]);
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * 
+     */
+    public function updatePassword(UserEntity $user, $password, $encoder)
+    {
+        $user->setPassword($encoder->encodePassword($user, $password));
+        $this->userRepository->updatePasswordById($user);
+    }
+
+    /**
+     * 
+     */
+    public function filter($data)
+    {
+        return $this->userRepository->findBy(array(
+            $data['filterType'] => $data['filterText']
+        ));
+    }
+
+    /**
+     * 
+     */
+    public function create(UserEntity $user, $encoder)
+    {
+        $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+    }    
 
 }
