@@ -20,13 +20,13 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, UserEntity::class);
     }
 
-    public function updatePasswordById(UserEntity $user)
+    public function updateUserPassword(UserEntity $user, $password)
     {
         $qb = $this->createQueryBuilder('u')
         ->update(UserEntity::class, 'u')
         ->set('u.password', ':password')
         ->where('u.id = :id')
-        ->setParameter(':password', $user->getPassword())
+        ->setParameter(':password', $password)
         ->setParameter(':id', $user->getId())
         ->getQuery()
         ->execute();

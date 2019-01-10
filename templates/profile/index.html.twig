@@ -11,13 +11,13 @@
     {% endblock %}
 
     <div class="container">
-         {% for flash_message in app.session.flashbag.get('user#success') %}
+         {% for flash_message in app.session.flashbag.get('profile#updated_successfully') %}
             <div class="alert alert-success" role="alert">
                 {{flash_message}}
             </div>
         {% endfor %}
 
-        <h1 class="text-center">Perfil</h1>
+        <h1 class="text-center">Atualizar senha</h1>
 
         {{ form_start(form) }}
         {{ form_widget(form) }}

@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\User as UserEntity;
 use App\Repository\UserRepository as UserRepository;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class User
 {
@@ -13,46 +14,41 @@ class User
     private $entityManager;
 
     /**
+     * @var UserPasswordEncoderInterface $encoder
+     */
+    private $encoder;
+
+    /**
      * @var UserRepository $userRepository
      */
     private $userRepository;
 
-    /**
-     * Construct.
-     */
-    public function __construct(EntityManager $entityManager)
+
+    public function __construct(
+        EntityManager $entityManager,
+        UserPasswordEncoderInterface $encoder
+    )
     {
         $this->entityManager = $entityManager;
+        $this->encoder = $encoder;
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
     }
 
-    /**
-     *
-     */
     public function findAll()
     {
         return $this->userRepository->findAll();
     }
 
-    /**
-     *
-     */
     public function findById($id)
     {
         return $this->userRepository->findOneBy(['id' => $id]);
     }
 
-    /**
-     * 
-     */
     public function update()
     {
         $this->entityManager->flush();
     }
 
-    /**
-     * 
-     */
     public function remove($userId)
     {
         $user = $this->userRepository->findOneBy(['id' => $userId]);
@@ -60,17 +56,12 @@ class User
         $this->entityManager->flush();
     }
 
-    /**
-     * 
-     */
-    public function updatePassword(UserEntity $user)
+    public function updatePassword(UserEntity $user, $decodedPassword)
     {
-        $this->userRepository->updatePasswordById($user);
+        $password = $this->encoder->encodePassword($user, $decodedPassword);
+        $this->userRepository->updateUserPassword($user, $password);
     }
 
-    /**
-     * 
-     */
     public function filter($data)
     {
         return $this->userRepository->findBy(array(
@@ -78,14 +69,11 @@ class User
         ));
     }
 
-    /**
-     * 
-     */
     public function create(UserEntity $user, $encoder)
     {
         $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-    }    
+    }
 
 }
