@@ -23,9 +23,7 @@ class User extends AbstractController
      */
     private $userService;
 
-    /**
-     * Construct.
-     */
+
     public function __construct(
         UserService $userService
     )
@@ -33,9 +31,6 @@ class User extends AbstractController
         $this->userService = $userService;
     }
 
-    /**
-     * 
-     */
     public function index(Request $request)
     {
         $users = $this->userService->findAll();
@@ -66,9 +61,6 @@ class User extends AbstractController
         ));
     }
 
-    /**
-     *
-     */
     private function handleFilterFormSubmission($form)
     {
         $data = $form->getData();
@@ -77,9 +69,6 @@ class User extends AbstractController
         return ($users == null) ? array() : $users;
     }
 
-    /**
-     * 
-     */
     public function new(Request $request, UserPasswordEncoderInterface $encoder)
     {
         $user = new UserEntity();
@@ -115,9 +104,6 @@ class User extends AbstractController
         ));
     }
 
-    /**
-     * 
-     */
     public function handleCreationFormSubmission($form, $encoder)
     {
         $user = $form->getData();
@@ -132,10 +118,7 @@ class User extends AbstractController
         return $this->redirectToRoute('users');
     }
 
-    /**
-     * 
-     */
-    public function edit(Request $request, $id, UserPasswordEncoderInterface $encoder)
+    public function edit(Request $request, $id)
     {
         $user = $this->userService->findById($id);
 
@@ -150,10 +133,11 @@ class User extends AbstractController
             ])
             ->add('save', SubmitType::class, ['label' => 'Editar'])
             ->getForm();
-        
+
         $formPassword = $this->createFormBuilder($user)
             ->add('password', RepeatedType::class, array(
                 'type' => PasswordType::class,
+                'invalid_message' => 'Senhas precisam ser idênticas',
                 'required' => true,
                 'first_options'  => ['label' => 'Senha'],
                 'second_options' => ['label' => 'Repetir senha'],
@@ -161,23 +145,15 @@ class User extends AbstractController
             ->add('save_password', SubmitType::class, ['label' => 'Editar senha'])
             ->getForm();
 
-        $formPassword->handleRequest($request);
         $form->handleRequest($request);
+        $formPassword->handleRequest($request);
 
-        if ($formPassword->get('save_password')->isClicked() && $formPassword->isSubmitted()) {
-            if(!$formPassword->isValid())
-            {
-                $this->addFlash(
-                    'user#error',
-                    'Os campos da senha devem corresponder.'
-                );
-                return $this->redirectToRoute('edit_user', array('id' => $id));
-            }
-            return $this->handleEditPasswordFormSubmission($formPassword, $encoder);
-        }
-        
-        if ($form->get('save')->isClicked() && $form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             return $this->handleEditFormSubmission();
+        }
+
+        if ($formPassword->isSubmitted() && $formPassword->isValid()) {
+            return $this->handleEditPasswordFormSubmission($formPassword, $user);
         }
 
         return $this->render('user/edit.html.twig', array(
@@ -186,9 +162,6 @@ class User extends AbstractController
         ));
     }
 
-    /**
-     *
-     */
     private function handleEditFormSubmission()
     {
         $this->userService->update();
@@ -201,15 +174,11 @@ class User extends AbstractController
         return $this->redirectToRoute('users');
     }
 
-    /**
-     *
-     */
-    private function handleEditPasswordFormSubmission($form, $encoder)
+    private function handleEditPasswordFormSubmission($form, $user)
     {
-        $user = $form->getData();
-        $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+        $password = $form->get('password')->getData();
 
-        $this->userService->updatePassword($user);
+        $this->userService->updatePassword($user, $password);
 
         $this->addFlash(
             'user#success',
@@ -219,9 +188,6 @@ class User extends AbstractController
         return $this->redirectToRoute('users');
     }
 
-    /**
-     * 
-     */
     public function remove(Request $request, $id)
     {
         $this->userService->remove($id);
