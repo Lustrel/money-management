@@ -6,6 +6,7 @@ use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\User as UserEntity;
 use App\Service\Installment as InstallmentService;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -32,9 +33,39 @@ class Installment extends Controller
     {
         $installments = $this->installmentService->findAll();
 
+        $form = $this->createFormBuilder()
+            ->add('filterName', TextType::class, array(
+                'label' => 'Cliente',
+                'required' => false,
+            ))
+            ->add('filterValue', TextType::class, array(
+                'label' => 'Valor',
+                'required' => false,
+            ))
+            ->add('submit', SubmitType::class, ['label' => 'Filtrar'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $installments = $this->handleFilterFormSubmission($form);
+        }
+
         return $this->render('installment/index.html.twig', array(
             'installments' => $installments,
+            'filter_form' => $form->createView()
         ));
+    }
+
+    /**
+     * 
+     */
+    public function handleFilterFormSubmission($form)
+    {
+        $data = $form->getData();
+        $installments = $this->installmentService->filter($data);
+
+        return ($installments == null) ? array() : $installments;
     }
 
     /**
