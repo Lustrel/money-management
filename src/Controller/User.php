@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User as UserEntity;
 use App\Entity\Role as RoleEntity;
+use App\Service\User as UserService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -15,18 +16,28 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-
 class User extends AbstractController
 {
+    /**
+     * @var UserService $userService
+     */
+    private $userService;
+
+
+    public function __construct(
+        UserService $userService
+    )
+    {
+        $this->userService = $userService;
+    }
+
     public function index(Request $request)
     {
-        $users = $this
-            ->getDoctrine()
-            ->getRepository(UserEntity::class)
-            ->findAll();
+        $users = $this->userService->findAll();
 
         $form = $this->createFormBuilder()
-            ->add('filterText', TextType::class, ['label' => 'Valor'])
+            ->add('filterText', TextType::class, array(
+                'label' => 'Valor'))
             ->add('filterType', ChoiceType::class, array(
                 'label' => "Campo",
                 'choices' => array(
@@ -34,33 +45,28 @@ class User extends AbstractController
                     'E-mail' => 'email',
                 ),
             ))
-            ->add('submit', SubmitType::class, ['label' => 'Filtrar'])
+            ->add('submit', SubmitType::class, array(
+                'label' => 'Filtrar'))
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $filterUsers = $this
-                ->getDoctrine()
-                ->getRepository(UserEntity::class)
-                ->findBy(array($data['filterType'] => $data['filterText']));
-
-            if($filterUsers == null) {
-                $this->addFlash(
-                    'notice',
-                    'Não há registros com esses dados!'
-                );
-            } else {
-                $users = $filterUsers;
-            }
+            $users = $this->handleFilterFormSubmission($form);
         }
 
         return $this->render('user/index.html.twig', array(
             'users' => $users,
             'filter_form' => $form->createView()
         ));
+    }
+
+    private function handleFilterFormSubmission($form)
+    {
+        $data = $form->getData();
+        $users = $this->userService->filter($data);
+
+        return ($users == null) ? array() : $users;
     }
 
     public function new(Request $request, UserPasswordEncoderInterface $encoder)
@@ -90,19 +96,7 @@ class User extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
-            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            $this->addFlash(
-                'notice',
-                'Usuário cadastrado com sucesso!'
-            );
-
-            return $this->redirectToRoute('users');
+            return $this->handleCreationFormSubmission($form, $encoder);
         }
 
         return $this->render('user/create.html.twig', array(
@@ -110,12 +104,23 @@ class User extends AbstractController
         ));
     }
 
+    public function handleCreationFormSubmission($form, $encoder)
+    {
+        $user = $form->getData();
+
+        $this->userService->create($user, $encoder);
+
+        $this->addFlash(
+            'user#success',
+            'Cliente cadastrado com sucesso!'
+        );
+
+        return $this->redirectToRoute('users');
+    }
+
     public function edit(Request $request, $id)
     {
-        $user = $this
-            ->getDoctrine()
-            ->getRepository(UserEntity::class)
-            ->findOneBy(array('id' => $id));
+        $user = $this->userService->findById($id);
 
         $form = $this->createFormBuilder($user)
             ->add('name', TextType::class, ['label' => "Nome completo"])
@@ -132,15 +137,7 @@ class User extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->flush();
-
-            $this->addFlash(
-                'notice',
-                'Dados do usuário foram alterados com sucesso!'
-            );
-
-            return $this->redirectToRoute('users');
+            return $this->handleEditFormSubmission();
         }
 
         return $this->render('user/edit.html.twig', array(
@@ -148,20 +145,61 @@ class User extends AbstractController
         ));
     }
 
+    private function handleEditFormSubmission()
+    {
+        $this->userService->update();
+
+        $this->addFlash(
+            'user#success',
+            'Dados do usuário foram alterados com sucesso!'
+        );
+
+        return $this->redirectToRoute('users');
+    }
+
     public function remove(Request $request, $id)
     {
-        $user = $this
-            ->getDoctrine()
-            ->getRepository(UserEntity::class)
-            ->findOneBy(array('id' => $id));
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $this->userService->remove($id);
 
         $this->addFlash(
             'notice',
             'Usuário removido com sucesso!'
+        );
+
+        return $this->redirectToRoute('users');
+    }
+
+    public function changePassword(Request $request, $id)
+    {
+        $user = $this->userService->findById($id);
+        $form = $this->createFormBuilder()
+            ->add('password', RepeatedType::class, array(
+                'type' => PasswordType::class,
+                'invalid_message' => 'Senhas precisam ser idênticas.',
+                'first_options'  => ['label' => 'Nova senha'],
+                'second_options' => ['label' => 'Repita a nova senha'],
+            ))
+            ->add('submit', SubmitType::class, ['label' => 'Atualizar senha'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->handleChangePasswordSubmission($form, $user);
+        }
+
+        return $this->render('profile/index.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    private function handleChangePasswordSubmission($form, $user)
+    {
+        $password = $form->get('password')->getData();
+        $this->userService->updatePassword($user, $password);
+        $this->addFlash(
+            'user#success',
+            'Senha do usuário alterada com sucesso!'
         );
 
         return $this->redirectToRoute('users');

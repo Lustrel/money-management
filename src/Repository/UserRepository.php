@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
+use App\Entity\User as UserEntity;
 use App\Entity\Role as RoleEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -17,6 +17,18 @@ class UserRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, User::class);
+        parent::__construct($registry, UserEntity::class);
+    }
+
+    public function updateUserPassword(UserEntity $user, $password)
+    {
+        $qb = $this->createQueryBuilder('u')
+        ->update(UserEntity::class, 'u')
+        ->set('u.password', ':password')
+        ->where('u.id = :id')
+        ->setParameter(':password', $password)
+        ->setParameter(':id', $user->getId())
+        ->getQuery()
+        ->execute();
     }
 }

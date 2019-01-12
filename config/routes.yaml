@@ -6,7 +6,6 @@ logout:
     path: /logout
     controller: App\Controller\Authenticator::logout
 
-#Routes for User
 users:
     path: /users
     controller: App\Controller\User::index
@@ -23,7 +22,10 @@ remove_user:
     path: /remove_user/{id}
     controller: App\Controller\User::remove
 
-#Routes for Customer
+change_password:
+    path: /change_password/{id}
+    controller: App\Controller\User::changePassword
+
 customers:
     path: /customers
     controller: App\Controller\Customer::index
@@ -40,7 +42,6 @@ remove_customer:
     path: /remove_customer/{id}
     controller: App\Controller\Customer::remove
 
-#Routes for Loan
 loans:
     path: /loans
     controller: App\Controller\Loan::index
@@ -57,7 +58,6 @@ remove_loan:
     path: /remove_loan/{id}
     controller: App\Controller\Loan::remove
 
-#Routes for Installments
 installments:
     path: /installments
     controller: App\Controller\Installment::index
@@ -69,4 +69,8 @@ pay_installment:
 profits:
     path: /profits
     controller: App\Controller\Profit::index
+
+profile:
+    path: /profile
+    controller: App\Controller\Profile::index
 

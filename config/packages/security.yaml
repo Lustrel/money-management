@@ -18,10 +18,11 @@ security:
                 login_path: /
                 check_path: /
                 default_target_path: customers
-            
+
             logout:
                 path: /logout
                 target: /
+
     access_control:
         # User
         - { path: ^/create_user, roles: ROLE_ADMIN }
@@ -34,6 +35,7 @@ security:
         - { path: ^/edit_customer, roles: ROLE_ADMIN }
         - { path: ^/remove_customer, roles: ROLE_ADMIN }
         - { path: ^/customers, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/change_password, roles: ROLE_ADMIN }
 
         #Loan
         - { path: ^/create_loan, roles: ROLE_ADMIN }
@@ -44,6 +46,9 @@ security:
         #Installment
         - { path: ^/installments, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/pay_installment, roles: ROLE_ADMIN }
+
+        #Profile
+        - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
 
         #Login
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
