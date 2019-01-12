@@ -134,31 +134,14 @@ class User extends AbstractController
             ->add('save', SubmitType::class, ['label' => 'Editar'])
             ->getForm();
 
-        $formPassword = $this->createFormBuilder($user)
-            ->add('password', RepeatedType::class, array(
-                'type' => PasswordType::class,
-                'invalid_message' => 'Senhas precisam ser idênticas',
-                'required' => true,
-                'first_options'  => ['label' => 'Senha'],
-                'second_options' => ['label' => 'Repetir senha'],
-            ))
-            ->add('save_password', SubmitType::class, ['label' => 'Editar senha'])
-            ->getForm();
-
         $form->handleRequest($request);
-        $formPassword->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->handleEditFormSubmission();
         }
 
-        if ($formPassword->isSubmitted() && $formPassword->isValid()) {
-            return $this->handleEditPasswordFormSubmission($formPassword, $user);
-        }
-
         return $this->render('user/edit.html.twig', array(
             'form' => $form->createView(),
-            'form_password' => $formPassword->createView(),
         ));
     }
 
@@ -174,20 +157,6 @@ class User extends AbstractController
         return $this->redirectToRoute('users');
     }
 
-    private function handleEditPasswordFormSubmission($form, $user)
-    {
-        $password = $form->get('password')->getData();
-
-        $this->userService->updatePassword($user, $password);
-
-        $this->addFlash(
-            'user#success',
-            'Senha do usuário alterada com sucesso!'
-        );
-
-        return $this->redirectToRoute('users');
-    }
-
     public function remove(Request $request, $id)
     {
         $this->userService->remove($id);
@@ -195,6 +164,42 @@ class User extends AbstractController
         $this->addFlash(
             'notice',
             'Usuário removido com sucesso!'
+        );
+
+        return $this->redirectToRoute('users');
+    }
+
+    public function changePassword(Request $request, $id)
+    {
+        $user = $this->userService->findById($id);
+        $form = $this->createFormBuilder()
+            ->add('password', RepeatedType::class, array(
+                'type' => PasswordType::class,
+                'invalid_message' => 'Senhas precisam ser idênticas.',
+                'first_options'  => ['label' => 'Nova senha'],
+                'second_options' => ['label' => 'Repita a nova senha'],
+            ))
+            ->add('submit', SubmitType::class, ['label' => 'Atualizar senha'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->handleChangePasswordSubmission($form, $user);
+        }
+
+        return $this->render('profile/index.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    private function handleChangePasswordSubmission($form, $user)
+    {
+        $password = $form->get('password')->getData();
+        $this->userService->updatePassword($user, $password);
+        $this->addFlash(
+            'user#success',
+            'Senha do usuário alterada com sucesso!'
         );
 
         return $this->redirectToRoute('users');

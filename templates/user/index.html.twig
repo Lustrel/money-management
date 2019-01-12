@@ -69,7 +69,8 @@
                                 <td>{{ user.role.name }}</td>
                                 <td>
                                     <a class="btn btn-secondary btn-sm" href="/edit_user/{{ user.id }}">Editar</a>
-                                    <a class="btn btn-danger btn-sm" href="/remove_user/{{ user.id }}">Remover</a>
+                                    <a class="btn btn-danger btn-sm" href="/remove_user/{{ user.id }}">Excluir</a>
+                                    <a class="btn btn-info btn-sm" href="/change_password/{{ user.id }}">Mudar senha</a>
                                 </td>
                             </tr>
                         {% endfor %}
