@@ -31,17 +31,19 @@ class InstallmentsRepository extends ServiceEntityRepository
     public function findByNameValue($data)
     {
         $qb = $this->createQueryBuilder('i')
-        ->join('i.loan', 'l')
-        ->join('l.customer', 'c');
-        if(!is_null($data['filterName']))
-        {
-            $qb->where('c.name LIKE :name')
-            ->setParameter('name', '%'.$data['filterName'].'%');
+            ->join('i.loan', 'l')
+            ->join('l.customer', 'c');
+
+        if (!is_null($data['filterName'])) {
+            $qb
+                ->where('c.name LIKE :name')
+                ->setParameter('name', '%'.$data['filterName'].'%');
         }
-        if(!is_null($data['filterValue']))
-        {
-            $qb->andWhere('i.value = :value')
-            ->setParameter('value', $data['filterValue']);
+
+        if (!is_null($data['filterValue'])) {
+            $qb
+                ->andWhere('i.value = :value')
+                ->setParameter('value', $data['filterValue']);
         }
 
         return $qb->getQuery()->getResult();
