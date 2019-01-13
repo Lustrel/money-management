@@ -2,7 +2,7 @@
 {% use "navbar.html.twig" %}
 
 {% block title %}
-    {{ parent() ~ 'Gerar novo empréstimo?' }}
+    {{ parent() ~ 'Criar novo produto?' }}
 {% endblock %}
 
 {% block body %}
@@ -17,14 +17,14 @@
                     <h4 class="alert-heading">A última parcela não foi totalmente paga</h4>
                     <hr>
                     <p>Parece que faltaram <b>{{ 'R$ ' ~ value }}</b> no pagamento da última parcela.</p>
-                    <p>Você quer gerar um novo empréstimo com este valor?</p>
+                    <p>Você quer gerar um novo produto com este valor?</p>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                <a href="/create_loan?customer={{customer.id}}&value={{value}}" class="btn btn-success">Sim, gerar novo empréstimo</a>
+                <a href="/create_loan?customer={{customer.id}}&value={{value}}" class="btn btn-success">Sim, gerar novo produto</a>
                 <a href="/installments" class="btn btn-link">Não, apenas prosseguir</a>
             </div>
         </div>
