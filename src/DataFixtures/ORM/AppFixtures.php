@@ -125,7 +125,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
     private function addHelpers(ObjectManager $manager)
     {
         $helper = (new HelperEntity())
-            ->setLastInstallmentActualization(new \DateTime());
+            ->setLastInstallmentActualization(new \DateTime(date('Y-m-d')));
 
         $manager->persist($helper);
     }

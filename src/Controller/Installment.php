@@ -5,6 +5,8 @@ use App\Entity\Installment as InstallmentEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\User as UserEntity;
 use App\Service\Installment as InstallmentService;
+use App\Entity\Helper as HelperEntity;
+use App\Service\Helper as HelperService;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -19,11 +21,20 @@ class Installment extends Controller
     private $installmentService;
 
     /**
+     * @var HelperService $helperService
+     */
+    private $helperService;
+
+    /**
      * Construct.
      */
-    public function __construct(InstallmentService $installmentService)
+    public function __construct(
+        InstallmentService $installmentService,
+        HelperService $helperService
+    )
     {
         $this->installmentService = $installmentService;
+        $this->helperService = $helperService;
     }
 
     /**
@@ -31,6 +42,7 @@ class Installment extends Controller
      */
     public function index(Request $request)
     {
+        $helper = $this->helperService->lastInstallmentActualization();
         $installments = $this->installmentService->findAll();
 
         $form = $this->createFormBuilder()
