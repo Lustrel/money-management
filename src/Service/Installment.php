@@ -119,6 +119,35 @@ class Installment
     /**
      * 
      */
+    public function updateInstallmentsInArrears($today)
+    {
+        $fee = 5;
+
+        $toReceiveInstallments = $this->findByStatus(
+            $this->installmentStatusRepository->getToReceive()
+        );
+
+        foreach ($toReceiveInstallments as $installment) {
+           $installmentDueDate = $installment->getDueDate();
+           if($today > $installmentDueDate)
+           {
+                $valueWithInterest = $this
+                    ->calculatorService
+                    ->applyInterestFee($installment->getValue(), $fee);
+
+                $installment->setValue($valueWithInterest);
+                $installment->setStatus(
+                   $this->installmentStatusRepository->getInArrears());
+
+                $this->entityManager->persist($installment);
+                $this->entityManager->flush();
+           }
+        }
+    }
+
+    /**
+     * 
+     */
     public function filter($data)
     {
         return $this->installmentRepository->findByNameValue($data);
