@@ -62,6 +62,14 @@ class Installment
     }
 
     /**
+     * Find all installments by the given status.
+     */
+    public function findByStatus(InstallmentStatusEntity $status)
+    {
+        return $this->installmentRepository->findBy(['status' => $status]);
+    }
+
+    /**
      *
      */
     public function findNext(InstallmentEntity $installment)

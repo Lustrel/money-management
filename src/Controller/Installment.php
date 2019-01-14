@@ -42,7 +42,8 @@ class Installment extends Controller
      */
     public function index(Request $request)
     {
-        $helper = $this->helperService->lastInstallmentActualization();
+        $this->helperService->lastInstallmentActualization();        
+        
         $installments = $this->installmentService->findAll();
 
         $form = $this->createFormBuilder()
