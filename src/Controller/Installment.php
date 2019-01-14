@@ -42,7 +42,7 @@ class Installment extends Controller
      */
     public function index(Request $request)
     {
-        $this->helperService->CheckLastInstallmentActualization();        
+        $this->helperService->checkLastInstallmentActualization();        
         
         $installments = $this->installmentService->findAll();
 

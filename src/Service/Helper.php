@@ -50,7 +50,7 @@ class Helper
     /**
      * 
      */
-    public function CheckLastInstallmentActualization()
+    public function checkLastInstallmentActualization()
     {
         $helper = $this->getHelpers();
         $today = new \DateTime(date('Y-m-d'));
