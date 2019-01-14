@@ -98,9 +98,13 @@ class Loan
     private function createInstallment($loan, $price, $paymentDate)
     {
         $today = new \DateTime(date('Y-m-d'));
-        $today > $paymentDate ?
-            $toBePaidStatus = $this->installmentStatusRepository->getInArrears() :
+        if($today > $paymentDate)
+        {
+            $toBePaidStatus = $this->installmentStatusRepository->getInArrears();
+        }else {
             $toBePaidStatus = $this->installmentStatusRepository->getToReceive();
+
+        }
 
         $installment = (new InstallmentEntity())
             ->setValue($price)

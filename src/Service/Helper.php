@@ -1,8 +1,6 @@
 <?php
 namespace App\Service;
 
-date_default_timezone_set('America/Sao_paulo');
-
 use App\Entity\Helper as HelperEntity;
 use App\Repository\HelperRepository as HelperRepository;
 use App\Service\Installment as InstallmentService;
