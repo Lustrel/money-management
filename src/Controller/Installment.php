@@ -44,7 +44,9 @@ class Installment extends Controller
     {
         $this->helperService->checkLastInstallmentActualization();        
         
-        $installments = $this->installmentService->findAll();
+        $installments = $this->installmentService->findByRole(
+            $this->isGranted('ROLE_ADMIN')
+        );
 
         $form = $this->createFormBuilder()
             ->add('filterName', TextType::class, array(

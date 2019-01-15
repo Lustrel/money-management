@@ -54,6 +54,18 @@ class Installment
     }
 
     /**
+     * Find a specifcs installments by user role.
+     */
+    public function findByRole($isAdmin)
+    {
+        if($isAdmin)
+            return $this->installmentRepository->findAll();
+        
+        $today = new \DateTime(date('Y-m-d'));
+        return $this->installmentRepository->findBy(['due_date' => $today]);
+    }
+
+    /**
      * Find a specific installment by the given id.
      */
     public function findById($id)
