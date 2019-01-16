@@ -11,9 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class Installment extends Controller
+class Installment extends AbstractController
 {
     /**
      * @var InstallmentService $installmentService
@@ -37,14 +37,12 @@ class Installment extends Controller
         $this->helperService = $helperService;
     }
 
-    /**
-     *
-     */
     public function index(Request $request)
     {
-        $this->helperService->checkLastInstallmentActualization();        
-        
+        $this->helperService->checkLastInstallmentActualization();
+
         $installments = $this->installmentService->findByRole(
+            $this->getUser(),
             $this->isGranted('ROLE_ADMIN')
         );
 
@@ -73,7 +71,7 @@ class Installment extends Controller
     }
 
     /**
-     * 
+     *
      */
     public function handleFilterFormSubmission($form)
     {

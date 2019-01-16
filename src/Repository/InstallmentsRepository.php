@@ -48,4 +48,22 @@ class InstallmentsRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findByUserAndDate(UserEntity $user, $date)
+    {
+        $qb = $this
+            ->createQueryBuilder('i')
+            ->innerJoin('i.loan', 'l', 'WITH', 'i.loan = l.id')
+            ->innerJoin('l.customer', 'c', 'WITH', 'l.customer = c.id')
+            ->innerJoin('c.user', 'u', 'WITH', 'c.user = u.id')
+            ->where('u.id = :user_id')
+            ->andWhere('i.due_date = :date');
+
+        $qb->setParameters([
+            'user_id' => $user,
+            'date' => $date,
+        ]);
+
+        return $qb->getQuery()->getResult();
+    }
 }
