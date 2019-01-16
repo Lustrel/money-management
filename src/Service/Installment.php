@@ -131,13 +131,12 @@ class Installment
            $installmentDueDate = $installment->getDueDate();
            if($today > $installmentDueDate)
            {
-                $valueWithInterest = $this
-                    ->calculatorService
-                    ->applyInterestFee($installment->getValue(), $fee);
-
-                $installment->setValue($valueWithInterest);
+                $next = $this->findNext($installment);
+                $this->updateWithInterest($next,
+                    $installment->getValue());
+               
                 $installment->setStatus(
-                   $this->installmentStatusRepository->getInArrears());
+                    $this->installmentStatusRepository->getInArrears());
 
                 $this->entityManager->persist($installment);
                 $this->entityManager->flush();
