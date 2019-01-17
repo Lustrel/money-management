@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Installment as InstallmentEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\Loan as LoanEntity;
+use App\Entity\User as UserEntity;
 use App\Repository\InstallmentsRepository as InstallmentRepository;
 use App\Repository\InstallmentStatusRepository;
 use App\Service\Calculator as CalculatorService;
@@ -31,9 +32,7 @@ class Installment
      */
     private $calculatorService;
 
-    /**
-     * Construct.
-     */
+
     public function __construct(
         EntityManager $entityManager,
         CalculatorService $calculatorService
@@ -45,41 +44,36 @@ class Installment
         $this->calculatorService = $calculatorService;
     }
 
-    /**
-     * Find all created installments.
-     */
     public function findAll()
     {
         return $this->installmentRepository->findAll();
     }
 
-    /**
-     * Find a specific installment by the given id.
-     */
+    public function findByRole(UserEntity $user, $isAdmin)
+    {
+        if ($isAdmin) {
+            return $this->installmentRepository->findAll();
+        }
+
+        $today = new \DateTime(date('Y-m-d'));
+        return $this->installmentRepository->findByUserAndDate($user, $today);
+    }
+
     public function findById($id)
     {
         return $this->installmentRepository->find($id);
     }
 
-    /**
-     * Find all installments by the given status.
-     */
     public function findByStatus(InstallmentStatusEntity $status)
     {
         return $this->installmentRepository->findBy(['status' => $status]);
     }
 
-    /**
-     *
-     */
     public function findNext(InstallmentEntity $installment)
     {
         return $this->installmentRepository->findNext($installment);
     }
 
-    /**
-     * Set the given installment as paid.
-     */
     public function pay(InstallmentEntity $installment, $paidValue)
     {
         $paidStatus = $this->installmentStatusRepository->getPaid();
@@ -90,17 +84,11 @@ class Installment
         $this->entityManager->flush();
     }
 
-    /**
-     *
-     */
     public function isPartialPayment($value, $paidValue)
     {
         return ($value > $paidValue);
     }
 
-    /**
-     *
-     */
     public function updateWithInterest($installment, $remainingValue)
     {
         // Remaining values suffer a 5% increase
@@ -116,9 +104,6 @@ class Installment
         $this->entityManager->flush();
     }
 
-    /**
-     * 
-     */
     public function updateInstallmentsInArrears($today)
     {
         $fee = 5;
@@ -144,9 +129,6 @@ class Installment
         }
     }
 
-    /**
-     * 
-     */
     public function filter($data)
     {
         return $this->installmentRepository->findByNameValue($data);

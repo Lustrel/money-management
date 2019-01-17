@@ -23,9 +23,7 @@ class Helper
      */
     private $installmentService;
 
-    /**
-     * Construct.
-     */
+
     public function __construct(
         EntityManager $entityManager,
         InstallmentService $installmentService
@@ -36,18 +34,16 @@ class Helper
         $this->installmentService = $installmentService;
     }
 
-    /**
-     * Get helpers
-     */
     public function getHelpers()
     {
         $helper = $this->helperRepository->findAll();
+        if ($helper == NULL) {
+            throw new Exception('You must have at least one record for your Helper entity');
+        }
+
         return $helper[0];
     }
 
-    /**
-     * 
-     */
     public function checkLastInstallmentActualization()
     {
         $helper = $this->getHelpers();
