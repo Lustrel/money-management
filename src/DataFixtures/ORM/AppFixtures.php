@@ -1,11 +1,14 @@
 <?php
 namespace App\DataFixtures\ORM;
 
+date_default_timezone_set('America/Sao_paulo');
+
 use App\Entity\Customer as CustomerEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\InstallmentPeriod as InstallmentPeriodEntity;
 use App\Entity\Role as RoleEntity;
 use App\Entity\User as UserEntity;
+use App\Entity\Helper as HelperEntity;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -28,6 +31,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         $this->addCustomers($manager);
         $this->addInstallmentPeriods($manager);
         $this->addInstallmentStatus($manager);
+        $this->addHelpers($manager);
         $manager->flush();
     }
 
@@ -116,6 +120,14 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         $manager->persist($notPaid);
         $manager->persist($tooLate);
         $manager->persist($paid);
+    }
+
+    private function addHelpers(ObjectManager $manager)
+    {
+        $helper = (new HelperEntity())
+            ->setLastInstallmentActualization(new \DateTime(date('Y-m-d')));
+
+        $manager->persist($helper);
     }
 
     public function setContainer(ContainerInterface $container = null)
