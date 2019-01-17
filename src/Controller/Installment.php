@@ -5,13 +5,15 @@ use App\Entity\Installment as InstallmentEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\User as UserEntity;
 use App\Service\Installment as InstallmentService;
+use App\Entity\Helper as HelperEntity;
+use App\Service\Helper as HelperService;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class Installment extends Controller
+class Installment extends AbstractController
 {
     /**
      * @var InstallmentService $installmentService
@@ -19,19 +21,30 @@ class Installment extends Controller
     private $installmentService;
 
     /**
-     * Construct.
+     * @var HelperService $helperService
      */
-    public function __construct(InstallmentService $installmentService)
-    {
-        $this->installmentService = $installmentService;
-    }
+    private $helperService;
 
     /**
-     *
+     * Construct.
      */
+    public function __construct(
+        InstallmentService $installmentService,
+        HelperService $helperService
+    )
+    {
+        $this->installmentService = $installmentService;
+        $this->helperService = $helperService;
+    }
+
     public function index(Request $request)
     {
-        $installments = $this->installmentService->findAll();
+        $this->helperService->checkLastInstallmentActualization();
+
+        $installments = $this->installmentService->findByRole(
+            $this->getUser(),
+            $this->isGranted('ROLE_ADMIN')
+        );
 
         $form = $this->createFormBuilder()
             ->add('filterName', TextType::class, array(
@@ -58,7 +71,7 @@ class Installment extends Controller
     }
 
     /**
-     * 
+     *
      */
     public function handleFilterFormSubmission($form)
     {
