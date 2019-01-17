@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+{% use "navbar.html.twig" %}
+
+{% block title %}
+    {{ parent() ~ 'Histórico de clientes' }}
+{% endblock %}
+
+{% block body %}
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
+
+    <div class="container">
+        <!-- Section title -->
+        <div class="row mb-3">
+            <div class="col">
+                <h1 class="text-center">Histórico de clientes</h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}
