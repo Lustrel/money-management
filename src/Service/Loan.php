@@ -115,4 +115,9 @@ class Loan
         $this->entityManager->remove($loan);
         $this->entityManager->flush();
     }
+
+    public function customerLoansHistoric()
+    {
+        return $this->loanRepository->customerLoansHistoric();
+    }
 }

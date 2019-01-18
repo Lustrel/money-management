@@ -74,7 +74,7 @@ profile:
     path: /profile
     controller: App\Controller\Profile::index
 
-customer_history:
-    path: /customer_history
-    controller: App\Controller\CustomerHistory::index
+customer_historic:
+    path: /customer_historic
+    controller: App\Controller\CustomerHistoric::index
 
