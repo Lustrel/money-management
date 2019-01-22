@@ -22,4 +22,9 @@ class InstallmentStatusRepository extends ServiceEntityRepository
     {
         return $this->find(InstallmentStatusEntity::$ID_PAID);
     }
+
+    public function getInArrears()
+    {
+        return $this->find(InstallmentStatusEntity::$ID_IN_ARREARS);
+    }
 }
