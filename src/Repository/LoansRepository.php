@@ -48,4 +48,13 @@ class LoansRepository extends ServiceEntityRepository
             ->getResult();
         }
     }
+
+    public function customerLoansHistoric()
+    {
+        return $this->createQueryBuilder('l')
+        ->leftJoin('l.customer', 'c')
+        ->select('c.name, l.borrowed_value, l.total_installments')
+        ->getQuery()
+        ->getResult();
+    }
 }
