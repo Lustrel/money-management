@@ -157,7 +157,7 @@ class Customer extends AbstractController
                 'placeholder' => 'Selecione um vendedor',
                 'required' => true
             ])
-            ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
+            ->add('save', SubmitType::class, ['label' => 'Editar'])
             ->getForm();
 
         $form->handleRequest($request);

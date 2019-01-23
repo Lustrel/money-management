@@ -74,6 +74,8 @@
                                     <td>
                                         {% if not installment.status.isPaid %}
                                             <a class="btn btn-secondary btn-sm" href="/pay_installment/{{ installment.id }}">Dar baixa</a>
+                                        {% else %}
+                                            <a class="btn btn-primary btn-sm" href="/edit_installment/{{ installment.id }}">Editar</a>
                                         {% endif %}
                                     </td>
                                 {% endif %}

@@ -97,25 +97,19 @@ class Installment extends AbstractController
     public function pay(Request $request, $id)
     {
         $installment = $this->installmentService->findById($id);
+        $today = new \DateTime();
 
         $form = $this->createFormBuilder()
+            ->add('paymentDate', DateType::class, array(
+                'widget' => 'single_text',
+                'label' => 'Data de pagamento',
+                'attr' => array('value' => $today->format('Y-m-d')),
+                'mapped' => false,
+            ))
             ->add('paymentValue', NumberType::class, array(
                 'label' => 'Valor recebido',
                 'attr' => array('value' => $installment->getValue()),
                 'mapped' => false
-            ))
-            ->add('paymentDate', DateType::class, array(
-                'widget' => 'single_text',
-                'label' => 'Data de pagamento',
-                'attr' => array('value' => $installment->getDueDate()->format('Y-m-d')),
-                'mapped' => false,
-            ))
-            ->add('paymentStatus', EntityType::class, array(
-                'label' => 'Status do pagamento',
-                'class' => InstallmentStatusEntity::class,
-                'choice_label' => 'name',
-                'preferred_choices' => 'paid',
-                'mapped' => false,
             ))
             ->add('save', SubmitType::class, array(
                 'label' => 'Dar baixa',
@@ -138,10 +132,10 @@ class Installment extends AbstractController
      */
     private function handlePaymentFormSubmission($form, $installment)
     {
-        $paidValue = $form->get('paymentValue')->getData();
         $paidDate = $form->get('paymentDate')->getData();
-        $paidStatus = $form->get('paymentStatus')->getData();
+        $paidValue = $form->get('paymentValue')->getData();
         $currentValue = $installment->getValue();
+        $installment->setDueDate($paidDate);
 
         $this->installmentService->pay($installment, $paidValue);
 
@@ -161,6 +155,58 @@ class Installment extends AbstractController
         $this->addFlash(
             'installment#paid_successfully',
             'Baixa de parcela efetuada com sucesso!'
+        );
+
+        return $this->redirectToRoute('installments');
+    }
+
+    /**
+     *
+     */
+    public function edit(Request $request, $id)
+    {
+        $installment = $this->installmentService->findById($id);
+        dump($installment);
+
+        $form = $this->createFormBuilder($installment)
+        ->add('due_date', DateType::class, array(
+            'widget' => 'single_text',
+            'label' => 'Data de pagamento',
+            ))
+            ->add('value', NumberType::class, array(
+                'label' => 'Valor da parcela',
+            ))
+            ->add('status',EntityType::class, array(
+                'label' => 'Status',
+                'class' => InstallmentStatusEntity::class,
+                'choice_label' => 'name',
+            ))
+            ->add('save', SubmitType::class, array(
+                'label' => 'Editar',
+            ))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->handleEditFormSubmission($form);
+        }
+
+        return $this->render('installment/edit.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     *
+     */
+    private function handleEditFormSubmission()
+    {
+        $this->installmentService->update();
+
+        $this->addFlash(
+            'installment#success',
+            'Dados da parcela foram alterados com sucesso!'
         );
 
         return $this->redirectToRoute('installments');
