@@ -22,6 +22,11 @@ class Installment
      * @ORM\Column(type="date")
      */
     private $due_date;
+    
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $pay_date;
 
     /**
      * @ORM\Column(type="integer")
@@ -60,6 +65,17 @@ class Installment
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function getPayDate()
+    {
+        return $this->pay_date;
+    }
+
+    public function setPayDate($pay_date)
+    {
+        $this->pay_date = $pay_date;
+        return $this;
     }
 
     public function setValue($value)

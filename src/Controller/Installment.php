@@ -135,7 +135,7 @@ class Installment extends AbstractController
         $paidDate = $form->get('paymentDate')->getData();
         $paidValue = $form->get('paymentValue')->getData();
         $currentValue = $installment->getValue();
-        $installment->setDueDate($paidDate);
+        $installment->setPayDate($paidDate);
 
         $this->installmentService->pay($installment, $paidValue);
 
@@ -169,7 +169,7 @@ class Installment extends AbstractController
         dump($installment);
 
         $form = $this->createFormBuilder($installment)
-        ->add('due_date', DateType::class, array(
+        ->add('pay_date', DateType::class, array(
             'widget' => 'single_text',
             'label' => 'Data de pagamento',
             ))
