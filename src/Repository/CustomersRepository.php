@@ -19,6 +19,11 @@ class CustomersRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
+    public function findAll()
+    {
+        return $this->findBy(array(), array('name' => 'ASC'));
+    }
+
     public function filter($data)
     {
         return $this->createQueryBuilder('c')
