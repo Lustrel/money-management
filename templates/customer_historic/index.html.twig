@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+{% use "navbar.html.twig" %}
+
+{% block title %}
+    {{ parent() ~ 'Histórico de clientes' }}
+{% endblock %}
+
+{% block body %}
+    {% block navbar %}
+        {{ parent() }}
+    {% endblock %}
+
+    <div class="container">
+        <!-- Section title -->
+        <div class="row mb-3">
+            <div class="col">
+                <h1 class="text-center">Histórico de clientes</h1>
+            </div>
+        </div>
+
+         <div class="row">
+            <div class="col">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Qtd. Parcelas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for historic in historics %}
+                        <tr>
+                            <td>{{ historic.name }}</td>
+                            <td>{{ 'R$ ' ~ historic.borrowed_value }}</td>
+                            <td>{{ historic.total_installments }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -50,5 +50,8 @@ security:
         #Profile
         - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
 
+        #Customer History
+        - { path: ^/customer_historic, roles: ROLE_ADMIN}
+
         #Login
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
