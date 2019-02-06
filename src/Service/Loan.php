@@ -46,7 +46,7 @@ class Loan
 
     public function findAll()
     {
-        return $this->loanRepository->findAll();
+        return $this->loanRepository->findAllSortedByCustomer();
     }
 
     public function findById($id)
