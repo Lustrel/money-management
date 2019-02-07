@@ -39,7 +39,6 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
                             <th scope="col">Cliente</th>
                             <th scope="col">CPF</th>
                             <th scope="col">Valor</th>
@@ -53,7 +52,6 @@
                     <tbody>
                         {% for installment in installments %}
                             <tr>
-                                <th scope="row">{{ installment.id }}</th>
                                 <td>{{ installment.loan.customer.name}}</td>
                                 <td>{{ installment.loan.customer.documentnumber }}</td>
                                 <td>{{ 'R$ ' ~ installment.value }}</td>
