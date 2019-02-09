@@ -59,6 +59,15 @@ class Installment
         return $this->installmentRepository->findByUserAndDate($user, $today);
     }
 
+    public function findByRoleAndLoan(UserEntity $user, $isAdmin, $loanId)
+    {
+        if ($isAdmin) {
+            return $this->installmentRepository->findAllByLoan($loanId);
+        }
+
+        return $this->installmentRepository->findByUserAndLoan($user, $loanId);
+    }
+
     public function findById($id)
     {
         return $this->installmentRepository->find($id);
