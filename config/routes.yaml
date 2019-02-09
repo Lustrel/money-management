@@ -62,6 +62,10 @@ installments:
     path: /installments
     controller: App\Controller\Installment::index
 
+installments_loanId:
+    path: /installments/{loanId}
+    controller: App\Controller\Installment::index
+
 pay_installment:
     path: /pay_installment/{id}
     controller: App\Controller\Installment::pay

@@ -37,14 +37,22 @@ class Installment extends AbstractController
         $this->helperService = $helperService;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, $loanId = null)
     {
         $this->helperService->checkLastInstallmentActualization();
 
-        $installments = $this->installmentService->findByRole(
-            $this->getUser(),
-            $this->isGranted('ROLE_ADMIN')
-        );
+        if ($loanId) {
+            $installments = $this->installmentService->findByRoleAndLoan(
+                $this->getUser(),
+                $this->isGranted('ROLE_ADMIN'),
+                $loanId
+            );
+        } else {
+            $installments = $this->installmentService->findByRole(
+                $this->getUser(),
+                $this->isGranted('ROLE_ADMIN')
+            );
+        }
 
         $form = $this->createFormBuilder()
             ->add('filterName', TextType::class, array(

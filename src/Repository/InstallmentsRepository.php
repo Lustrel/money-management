@@ -72,4 +72,27 @@ class InstallmentsRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findAllByLoan($loanId) 
+    {
+        return $this->findBy(['loan' => $loanId]);
+    }
+
+    public function findByUserAndLoan(UserEntity $user, $loanId)
+    {
+        $qb = $this
+            ->createQueryBuilder('i')
+            ->innerJoin('i.loan', 'l', 'WITH', 'i.loan = l.id')
+            ->innerJoin('l.customer', 'c', 'WITH', 'l.customer = c.id')
+            ->innerJoin('c.user', 'u', 'WITH', 'c.user = u.id')
+            ->where('u.id = :user_id')
+            ->andWhere('l.id = :loan_id');
+
+        $qb->setParameters([
+            'user_id' => $user,
+            'loan_id' => $loanId,
+        ]);
+
+        return $qb->getQuery()->getResult();
+    }
 }
