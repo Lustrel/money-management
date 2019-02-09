@@ -28,6 +28,11 @@ class InstallmentsRepository extends ServiceEntityRepository
         return $this->findBy(array('status' => InstallmentStatusEntity::$ID_PAID));
     }
 
+    public function findAllSortedByDueDate()
+    {
+        return $this->findBy([], ['due_date' => 'ASC']);
+    }
+
     public function findByNameValue($data)
     {
         $qb = $this->createQueryBuilder('i')
@@ -57,7 +62,8 @@ class InstallmentsRepository extends ServiceEntityRepository
             ->innerJoin('l.customer', 'c', 'WITH', 'l.customer = c.id')
             ->innerJoin('c.user', 'u', 'WITH', 'c.user = u.id')
             ->where('u.id = :user_id')
-            ->andWhere('i.due_date = :date');
+            ->andWhere('i.due_date = :date')
+            ->orderBy('i.due_date', 'ASC');
 
         $qb->setParameters([
             'user_id' => $user,

@@ -46,13 +46,13 @@ class Installment
 
     public function findAll()
     {
-        return $this->installmentRepository->findAll();
+        return $this->installmentRepository->findAllSortedByDueDate();
     }
 
     public function findByRole(UserEntity $user, $isAdmin)
     {
         if ($isAdmin) {
-            return $this->installmentRepository->findAll();
+            return $this->findAll();
         }
 
         $today = new \DateTime(date('Y-m-d'));
@@ -126,11 +126,11 @@ class Installment
            if($today > $installmentDueDate)
            {
                 $next = $this->findNext($installment);
-                $this->updateWithInterest($next,
-                    $installment->getValue());
-               
-                $installment->setStatus(
-                    $this->installmentStatusRepository->getInArrears());
+                if ($next) {
+                    $this->updateWithInterest($next, $installment->getValue());
+                }
+
+                $installment->setStatus($this->installmentStatusRepository->getInArrears());
 
                 $this->entityManager->persist($installment);
                 $this->entityManager->flush();

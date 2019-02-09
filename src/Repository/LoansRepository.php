@@ -29,6 +29,16 @@ class LoansRepository extends ServiceEntityRepository
         parent::__construct($registry, LoanEntity::class);
     }
 
+    public function findAllSortedByCustomer()
+    {
+        return $this
+            ->createQueryBuilder('l')
+            ->innerJoin('l.customer', 'c')
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function filter($data)
     {
         if(array_key_exists("join", $this->filterMap[$data['filterType']]))
