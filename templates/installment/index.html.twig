@@ -54,7 +54,7 @@
                     <tbody>
                         {% for installment in installments %}
                             <tr>
-                                <th scope="row">{{ installment.id }}</th>
+                                <th scope="row">{{ loop.index }}</th>
                                 <td>{{ installment.loan.customer.name}}</td>
                                 <td>{{ installment.loan.customer.documentnumber }}</td>
                                 <td>{{ 'R$ ' ~ installment.value }}</td>

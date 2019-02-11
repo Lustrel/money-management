@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Loan as LoanEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\User as UserEntity;
 
 /**
  * @method Loan|null find($id, $lockMode = null, $lockVersion = null)
@@ -27,6 +28,31 @@ class LoansRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, LoanEntity::class);
+    }
+
+    public function findAllSortedByCustomer()
+    {
+        return $this
+            ->createQueryBuilder('l')
+            ->innerJoin('l.customer', 'c')
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByUser(UserEntity $user)
+    {
+        $qb = $this
+            ->createQueryBuilder('p')
+            ->innerJoin('p.customer', 'c', 'WITH', 'p.customer = c.id')
+            ->innerJoin('c.user', 'u', 'WITH', 'c.user = u.id')
+            ->where('u.id = :user_id');
+
+        $qb->setParameters([
+            'user_id' => $user,
+        ]);
+
+        return $qb->getQuery()->getResult();
     }
 
     public function filter($data)

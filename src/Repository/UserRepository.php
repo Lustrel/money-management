@@ -20,6 +20,11 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, UserEntity::class);
     }
 
+    public function findAll()
+    {
+        return $this->findBy(array(), array('name' => 'ASC'));
+    }
+
     public function updateUserPassword(UserEntity $user, $password)
     {
         $qb = $this->createQueryBuilder('u')

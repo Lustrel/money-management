@@ -56,20 +56,18 @@
                             <th scope="col">#</th>
                             <th scope="col">Cliente</th>
                             <th scope="col">Período</th>
-                            <th scope="col">Produto</th>
+                            <th scope="col">Valor</th>
                             <th scope="col">Juros</th>
                             <th scope="col">Desconto</th>
                             <th scope="col">Qtd. Parcelas</th>
                             <th scope="col">Valor Parcela</th>
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <th scope="col">Ações</th>
-                            {% endif %}
+                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for loan in loans %}
                         <tr>
-                            <th scope="row">{{ loan.id }}</th>
+                            <th scope="row">{{ loop.index }}</th>
                             <td>{{ loan.customer.name }}</td>
                             <td>{{ loan.installmentperiod.name }}</td>
                             <td>{{ 'R$ ' ~ loan.borrowedvalue }}</td>
@@ -77,12 +75,14 @@
                             <td>{{ loan.discount ~ '%' }}</td>
                             <td>{{ loan.totalinstallments }}</td>
                             <td>{{ 'R$ ' ~ loan.installmentsValue }}</td>
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" href="/installments/{{ loan.id }}">Parcelas</a>
+                                {% if is_granted('ROLE_ADMIN') %}
                                     <a class="btn btn-secondary btn-sm" href="/edit_loan/{{ loan.id }}">Editar</a>
                                     <a class="btn btn-danger btn-sm" href="/remove_loan/{{ loan.id }}">Remover</a>
-                                </td>
-                            {% endif %}
+                                    
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

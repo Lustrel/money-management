@@ -49,7 +49,10 @@ class Loan extends AbstractController
      */
     public function index(Request $request)
     {
-        $loans = $this->loanService->findAll();
+        $loans = $this->loanService->findByRole(
+            $this->getUser(),
+            $this->isGranted('ROLE_ADMIN')
+        );
 
         $form = $this->createFormBuilder()
             ->add('filterText', TextType::class, ['label' => 'Valor'])
@@ -75,9 +78,6 @@ class Loan extends AbstractController
         ));
     }
 
-    /**
-     *
-     */
     private function handleFilterFormSubmission($form)
     {
         $data = $form->getData();
@@ -86,9 +86,6 @@ class Loan extends AbstractController
         return ($loans == null) ? array() : $loans;
     }
 
-    /**
-     *
-     */
     public function new(Request $request)
     {
         $loan = new LoanEntity();
@@ -145,9 +142,6 @@ class Loan extends AbstractController
         ));
     }
 
-    /**
-     *
-     */
     private function isComingFromPartialPayment(Request $request)
     {
         return (
@@ -156,9 +150,6 @@ class Loan extends AbstractController
         );
     }
 
-    /**
-     *
-     */
     private function handleCreationFormSubmission($form)
     {
         $loan = $form->getData();
@@ -174,9 +165,6 @@ class Loan extends AbstractController
         return $this->redirectToRoute('loans');
     }
 
-    /**
-     *
-     */
     public function edit(Request $request, $id)
     {
         $loan = $this->loanService->findById($id);
@@ -212,9 +200,6 @@ class Loan extends AbstractController
         ));
     }
 
-    /**
-     *
-     */
     private function handleEditFormSubmission($form)
     {
         $loan = $form->getData();

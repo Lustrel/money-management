@@ -5,6 +5,7 @@ use App\Entity\Installment as InstallmentEntity;
 use App\Entity\InstallmentPeriod as InstallmentPeriodEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\Loan as LoanEntity;
+use App\Entity\User as UserEntity;
 use App\Repository\InstallmentStatusRepository;
 use App\Repository\LoansRepository as LoanRepository;
 use App\Service\Calculator as CalculatorService;
@@ -46,12 +47,21 @@ class Loan
 
     public function findAll()
     {
-        return $this->loanRepository->findAll();
+        return $this->loanRepository->findAllSortedByCustomer();
     }
 
     public function findById($id)
     {
         return $this->loanRepository->findOneBy(['id' => $id]);
+    }
+
+    public function findByRole(UserEntity $user, $isAdmin)
+    {
+        if ($isAdmin) {
+            return $this->findAll();
+        }
+
+        return $this->loanRepository->findByUser($user);
     }
 
     public function filter($data)
