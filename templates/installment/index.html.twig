@@ -59,11 +59,11 @@
                                 <td>{{ installment.loan.customer.documentnumber }}</td>
                                 <td>{{ 'R$ ' ~ installment.value }}</td>
                                 <td>{{ installment.duedate | date('d/m/Y') }}</td>
-                                {% if installment.paydate %}
-                                    <td>{{ installment.paydate | date('d/m/Y') }}</td>
-                                {% else %}
-                                    <td>Não efetuado</td>
-                                {% endif %}
+                                <td>
+                                    {% if installment.paydate %}
+                                        {{ installment.paydate | date('d/m/Y') }}</td>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if installment.status.isPaid %}
                                         <span class="badge badge-pill badge-success">{{ installment.status.name }}</span>
