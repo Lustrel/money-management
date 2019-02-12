@@ -114,10 +114,6 @@ class Loan extends AbstractController
             ->add('totalInstallments', NumberType::class, ['label' => "Número de parcelas"])
             ->add('monthlyFee', NumberType::class, ['label' => 'Taxa de juros total (%)'])
             ->add('discount', NumberType::class, ['label' => 'Desconto no valor total (%)'])
-            ->add('comments', TextareaType::class, array(
-                'label' => 'Observações',
-                'required' => false,
-            ))
             ->add('installments', DateType::class, array(
                 'widget' => 'single_text',
                 'label' => 'Data de vencimento da primeira parcela',
@@ -127,6 +123,10 @@ class Loan extends AbstractController
                 'label' => 'Período entre cada parcela',
                 'class' => InstallmentPeriodEntity::class,
                 'choice_label' => 'name',
+            ))
+            ->add('comments', TextareaType::class, array(
+                'label' => 'Observações',
+                'required' => false,
             ))
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
@@ -185,7 +185,10 @@ class Loan extends AbstractController
                 'class' => InstallmentPeriodEntity::class,
                 'choice_label' => 'name',
             ))
-            ->add('comments', TextareaType::class, ['label' => 'Observações'])
+            ->add('comments', TextareaType::class, [
+                'label' => 'Observações',
+                'required' => false,
+            ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
 
