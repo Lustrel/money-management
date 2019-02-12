@@ -175,7 +175,7 @@ class Customer extends AbstractController
                 'label' => 'Telefone',
                 'required' => false,
             ])
-            ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
+            ->add('save', SubmitType::class, ['label' => 'Editar'])
             ->getForm();
 
         $form->handleRequest($request);

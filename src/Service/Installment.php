@@ -1,6 +1,5 @@
 <?php
 namespace App\Service;
-
 use App\Entity\Installment as InstallmentEntity;
 use App\Entity\InstallmentStatus as InstallmentStatusEntity;
 use App\Entity\Loan as LoanEntity;
@@ -9,7 +8,6 @@ use App\Repository\InstallmentsRepository as InstallmentRepository;
 use App\Repository\InstallmentStatusRepository;
 use App\Service\Calculator as CalculatorService;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-
 class Installment
 {
     /**
@@ -26,7 +24,7 @@ class Installment
      * @var InstallmentStatusRepository $installmentStatusRepository
      */
     private $installmentStatusRepository;
-
+    
     /**
      * @var CalculatorService $calculatorService
      */
@@ -54,7 +52,6 @@ class Installment
         if ($isAdmin) {
             return $this->findAll();
         }
-
         $today = new \DateTime(date('Y-m-d'));
         return $this->installmentRepository->findByUserAndDate($user, $today);
     }
@@ -88,7 +85,6 @@ class Installment
         $paidStatus = $this->installmentStatusRepository->getPaid();
         $installment->setStatus($paidStatus);
         $installment->setValue($paidValue);
-
         $this->entityManager->persist($installment);
         $this->entityManager->flush();
     }
@@ -102,13 +98,10 @@ class Installment
     {
         // Remaining values suffer a 5% increase
         $fee = 5;
-
         $valueWithInterest = $this
             ->calculatorService
             ->applyInterestFee($remainingValue, $fee);
-
         $installment->setValue($installment->getValue() + $valueWithInterest);
-
         $this->entityManager->persist($installment);
         $this->entityManager->flush();
     }
@@ -116,11 +109,9 @@ class Installment
     public function updateInstallmentsInArrears($today)
     {
         $fee = 5;
-
         $toReceiveInstallments = $this->findByStatus(
             $this->installmentStatusRepository->getToReceive()
         );
-
         foreach ($toReceiveInstallments as $installment) {
            $installmentDueDate = $installment->getDueDate();
            if($today > $installmentDueDate)
@@ -141,5 +132,10 @@ class Installment
     public function filter($data)
     {
         return $this->installmentRepository->findByNameValue($data);
+    }
+
+    public function update()
+    {
+        $this->entityManager->flush();    
     }
 }

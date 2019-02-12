@@ -70,6 +70,10 @@ pay_installment:
     path: /pay_installment/{id}
     controller: App\Controller\Installment::pay
 
+edit_installment:
+    path: /edit_installment/{id}
+    controller: App\Controller\Installment::edit
+
 profits:
     path: /profits
     controller: App\Controller\Profit::index
