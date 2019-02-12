@@ -49,7 +49,10 @@ class Installment extends AbstractController
 
     public function index(Request $request, $loanId = null)
     {
-        $this->helperService->checkLastInstallmentActualization();
+        // Since the server doesn't support workers, we take 
+        // the opportunity to update all installments with 
+        // late payment.
+        $this->helperService->updateInstallmentsWithLatePayment();
 
         if ($loanId) {
             $installments = $this->installmentService->findByRoleAndLoan(

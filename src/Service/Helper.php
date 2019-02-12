@@ -44,7 +44,7 @@ class Helper
         return $helper[0];
     }
 
-    public function checkLastInstallmentActualization()
+    public function updateInstallmentsWithLatePayment()
     {
         $helper = $this->getHelpers();
         $today = new \DateTime(date('Y-m-d'));
