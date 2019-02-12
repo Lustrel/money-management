@@ -43,7 +43,8 @@
                             <th scope="col">Cliente</th>
                             <th scope="col">CPF</th>
                             <th scope="col">Valor</th>
-                            <th scope="col">Vencimento</th>
+                            <th scope="col">Data vencimento</th>
+                            <th scope="col">Data pagamento</th>
                             <th scope="col">Status</th>
                             {% if is_granted('ROLE_ADMIN') %}
                                 <th scope="col">Ações</th>
@@ -58,6 +59,11 @@
                                 <td>{{ installment.loan.customer.documentnumber }}</td>
                                 <td>{{ 'R$ ' ~ installment.value }}</td>
                                 <td>{{ installment.duedate | date('d/m/Y') }}</td>
+                                {% if installment.paydate %}
+                                    <td>{{ installment.paydate | date('d/m/Y') }}</td>
+                                {% else %}
+                                    <td>Não efetuado</td>
+                                {% endif %}
                                 <td>
                                     {% if installment.status.isPaid %}
                                         <span class="badge badge-pill badge-success">{{ installment.status.name }}</span>
@@ -74,6 +80,8 @@
                                     <td>
                                         {% if not installment.status.isPaid %}
                                             <a class="btn btn-secondary btn-sm" href="/pay_installment/{{ installment.id }}">Dar baixa</a>
+                                        {% else %}
+                                            <a class="btn btn-primary btn-sm" href="/edit_installment/{{ installment.id }}">Editar</a>
                                         {% endif %}
                                     </td>
                                 {% endif %}

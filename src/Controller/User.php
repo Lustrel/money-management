@@ -74,7 +74,7 @@ class User extends AbstractController
         $user = new UserEntity();
 
         $form = $this->createFormBuilder($user)
-            ->add('name', TextType::class, ['label' => "Nome do usuário"])
+            ->add('name', TextType::class, ['label' => "Nome"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
             ->add('password', RepeatedType::class, array(
                 'type' => PasswordType::class,
@@ -84,7 +84,10 @@ class User extends AbstractController
                 'first_options'  => ['label' => 'Senha'],
                 'second_options' => ['label' => 'Repetir senha'],
             ))
-            ->add('phone', TelType::class, ['label' => 'Telefone'])
+            ->add('phone', TelType::class, [
+                'label' => 'Telefone',
+                'required' => false,
+            ])
             ->add('role', EntityType::class, array(
                 'label' => 'Cargo do usuário',
                 'class' => RoleEntity::class,
@@ -123,9 +126,12 @@ class User extends AbstractController
         $user = $this->userService->findById($id);
 
         $form = $this->createFormBuilder($user)
-            ->add('name', TextType::class, ['label' => "Nome completo"])
+            ->add('name', TextType::class, ['label' => "Nome"])
             ->add('email', EmailType::class, ['label' => "E-mail"])
-            ->add('phone', TelType::class, ['label' => 'Telefone'])
+            ->add('phone', TelType::class, [
+                'label' => 'Telefone',
+                'required' => false,
+            ])
             ->add('role', EntityType::class, [
                 'label' => 'Cargo',
                 'class' => RoleEntity::class,

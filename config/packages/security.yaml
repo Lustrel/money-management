@@ -46,6 +46,7 @@ security:
         #Installment
         - { path: ^/installments, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/pay_installment, roles: ROLE_ADMIN }
+        - { path: ^/edit_installment, roles: ROLE_ADMIN }
 
         #Profile
         - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }

@@ -82,10 +82,7 @@ class Customer extends AbstractController
         $customer = new CustomerEntity();
 
         $form = $this->createFormBuilder($customer)
-            ->add('name', TextType::class, ['label' => "Nome completo do cliente"])
-            ->add('document_number', TextType::class, ['label' => "Número do documento (CPF ou CNPJ)"])
-            ->add('email', EmailType::class, ['label' => "E-mail"])
-            ->add('phone', TextType::class, ['label' => "Telefone"])
+            ->add('name', TextType::class, ['label' => "Nome"])
             ->add('user',EntityType::class, [
                 'class' => UserEntity::class,
                 'attr' => ['class' => 'select2'],
@@ -99,6 +96,18 @@ class Customer extends AbstractController
                 'label' => "Vendedor responsável",
                 'placeholder' => 'Selecione um vendedor',
                 'required' => true
+            ])
+            ->add('document_number', TextType::class, [
+                'label' => 'CPF ou CNPJ',
+                'required' => false,
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'E-mail',
+                'required' => false,
+            ])
+            ->add('phone', TextType::class, [
+                'label' => 'Telefone',
+                'required' => false,
             ])
             ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
             ->getForm();
@@ -139,10 +148,7 @@ class Customer extends AbstractController
         $customer = $this->customerService->findById($id);
 
         $form = $this->createFormBuilder($customer)
-            ->add('name', TextType::class, ['label' => "Nome Completo"])
-            ->add('document_number', TextType::class, ['label' => "Número documento"])
-            ->add('email', EmailType::class, ['label' => "E-mail"])
-            ->add('phone', TextType::class, ['label' => "Telefone"])
+            ->add('name', TextType::class, ['label' => "Nome"])
             ->add('user',EntityType::class, [
                 'class' => UserEntity::class,
                 'attr' => ['class' => 'select2'],
@@ -157,7 +163,19 @@ class Customer extends AbstractController
                 'placeholder' => 'Selecione um vendedor',
                 'required' => true
             ])
-            ->add('save', SubmitType::class, ['label' => 'Cadastrar'])
+            ->add('document_number', TextType::class, [
+                'label' => 'CPF ou CNPJ',
+                'required' => false,
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'E-mail',
+                'required' => false,
+            ])
+            ->add('phone', TextType::class, [
+                'label' => 'Telefone',
+                'required' => false,
+            ])
+            ->add('save', SubmitType::class, ['label' => 'Editar'])
             ->getForm();
 
         $form->handleRequest($request);
